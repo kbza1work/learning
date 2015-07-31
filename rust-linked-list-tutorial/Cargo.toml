@@ -1,0 +1,5 @@
+[package]
+name = "rust-linked-list-tutorial"
+version = "0.1.0"
+description = "Following along the handy tutorials from http://cglab.ca/~abeinges/blah/too-many-lists/book/README.html"
+authors = ["Brent Houghton <brent@slixbits.com>"]
