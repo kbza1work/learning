@@ -1,6 +1,6 @@
 SYSCONF_LINK = g++
 CPPFLAGS     = -Ilib/tinyrenderer
-LDFLAGS      = -Ilib/tinyrenderer -Llib/tinyrenderer
+LDFLAGS      = -Ilib/tinyrenderer -Llib/tinyrenderer #-Xlinker --verbose
 LIBS         = -lm -ltgaimage
 
 DESTDIR = build/
