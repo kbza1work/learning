@@ -12,31 +12,27 @@
 const int width = 800;
 const int height = 800;
 
-float screenX(float x) {
-	return (x + 1.0) * width/2.0;
+int screenX(float x) {
+	return round((x + 1.0) * width/2.0);
 }
 int screenX(int x) {
-	return (x + 1) * width/2;
+	return round((x + 1) * width/2);
 }
 
-float screenY(float y) {
-	return (y + 1.0) * height/2.0;
+int screenY(float y) {
+	return round((y + 1.0) * height/2.0);
 }
 int screenY(int y) {
-	return (y + 1) * height/2;
+	return round((y + 1) * height/2);
 }
 
 // convert a vector with axes in the range [-1, 1] to screen space axes with
 // range [0, width]
-Vec3f screen(Vec3f vector) {
-	vector.x = screenX(vector.x);
-	vector.y = screenY(vector.y);
-	return vector;
+Vec2i screen(Vec3f vector) {
+	return Vec2i(screenX(vector.x), screenY(vector.y));
 }
-Vec3i screen(Vec3i vector) {
-	vector.x = screenX(vector.x);
-	vector.y = screenY(vector.y);
-	return vector;
+Vec2i screen(Vec3i vector) {
+	return Vec2i(screenX(vector.x), screenY(vector.y));
 }
 
 TGAImage testImage() {
@@ -64,9 +60,9 @@ TGAImage wireframeImage(Model *model) {
 	for (int i=0; i<model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
 		for (int j=0; j<3; j++) {
-			Vec3f v0 = model->vert(face[j]);
-			Vec3f v1 = model->vert(face[(j+1)%3]);
-			line(screen(v0), screen(v1), image, white);
+			Vec2i v0 = screen(model->vert(face[j]));
+			Vec2i v1 = screen(model->vert(face[(j+1)%3]));
+			line(v0, v1, image, white);
 		}
 	}
 	return image;
@@ -74,15 +70,23 @@ TGAImage wireframeImage(Model *model) {
 
 TGAImage filledImage(Model *model) {
 	TGAImage image(width, height, TGAImage::RGB);
-	TGAColor color = TGAColor(255, 100, 0, 255);
-	for(int i=0; i<model->nfaces(); i++) {
-		const std::vector<int> face = model->face(i);
-		std::vector<Vec3f> vertices;
-		for(int j = 0; j < 3; j++) {
-			vertices.push_back(screen(model->vert(face[j])));
+	const Vec3f light_dir(0,0,-1);
+	for (int i=0; i<model->nfaces(); i++) {
+		std::vector<int> face = model->face(i);
+		Vec2i screen_coords[3];
+		Vec3f world_coords[3];
+		for (int j=0; j<3; j++) {
+			Vec3f v = model->vert(face[j]);
+			screen_coords[j] = Vec2i((v.x+1.)*width/2., (v.y+1.)*height/2.);
+			world_coords[j]  = v;
 		}
-		triangle(vertices[0], vertices[1], vertices[2], image, color);
-		color = TGAColor((color.bgra[2] + 1) % 256, (color.bgra[1] + 2) % 256, (color.bgra[0] + 3) % 256, 255);
+		Vec3f n = crossProduct((world_coords[2]-world_coords[0]), (world_coords[1]-world_coords[0]));
+		n.normalize();
+		float intensity = n*light_dir;
+		if (intensity>0) {
+			auto color = TGAColor(intensity*255, intensity*255, intensity*255, 255);
+			triangle(screen_coords, image, color); 
+		}
 	}
 	return image;
 }

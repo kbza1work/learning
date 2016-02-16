@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <deque>
+#include <vector>
 
 #include "lib/tinyrenderer/geometry.h"
 #include "lib/tinyrenderer/tgaimage.h"
@@ -33,98 +33,45 @@ void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
 	}
 }
 
-void line(Vec3f v0, Vec3f v1, TGAImage &image, TGAColor color) {
+void line(Vec2f v0, Vec2f v1, TGAImage &image, TGAColor color) {
 	line(round(v0.x), round(v0.y), round(v1.x), round(v1.y), image, color);
 }
 
-void triangle(Vec3f v0, Vec3f v1, Vec3f v2, TGAImage &image, TGAColor color) {
-	// compute a line between v1 and v2, then iterate over points along the
-	// line, drawing lines from v0 to the current point on the line between v1
-	// and v2 to create a filled triangle
-	std::deque<Vec3f> longestSide;
-	Vec3f loneVertex;
-	longestSide.push_back(v0);
-	longestSide.push_back(v1);
-	longestSide.push_back(v2);
-	const float s0 = distance(longestSide[0], longestSide[1]);
-	const float s1 = distance(longestSide[0], longestSide[2]);
-	const float s2 = distance(longestSide[1], longestSide[2]);
-	if(s0 > s1) {
-		if(s0 > s2) {
-			loneVertex = v2;
-			longestSide.erase(longestSide.begin()+2);
-		} else {
-			loneVertex = v0;
-			longestSide.erase(longestSide.begin());
-		}
-	} else {
-		if(s1 > s2) {
-			loneVertex = v1;
-			longestSide.erase(longestSide.begin()+1);
-		} else {
-			loneVertex = v0;
-			longestSide.erase(longestSide.begin());
-		}
-	}
-
-	for(auto const& point: lineSeries(longestSide[0], longestSide[1])) {
-		line(loneVertex, point, image, color);
-	}
+void line(Vec2i v0, Vec2i v1, TGAImage &image, TGAColor color) {
+	line(v0.x, v0.y, v1.x, v1.y, image, color);
 }
 
+Vec3f barycentric(Vec2i *pts, Vec2i P) { 
+	Vec3f u = cross(Vec3f(pts[2][0]-pts[0][0], pts[1][0]-pts[0][0], pts[0][0]-P[0]), Vec3f(pts[2][1]-pts[0][1], pts[1][1]-pts[0][1], pts[0][1]-P[1])); 
+	// triangle is degenerate, in this case return smth with negative coordinates 
+	if (std::abs(u[2])<1) return Vec3f(-1,1,1);
+	return Vec3f(1.f-(u.x+u.y)/u.z, u.y/u.z, u.x/u.z); 
+} 
 
-// private
+void triangle(Vec2i *pts, TGAImage &image, TGAColor color) { 
+	Vec2i bboxmin(image.get_width()-1,	image.get_height()-1); 
+	Vec2i bboxmax(0, 0); 
+	Vec2i clamp(image.get_width()-1, image.get_height()-1); 
+	for (int i=0; i<3; i++) { 
+		for (int j=0; j<2; j++) { 
+			bboxmin[j] = std::max(0,		std::min(bboxmin[j], pts[i][j])); 
+			bboxmax[j] = std::min(clamp[j], std::max(bboxmax[j], pts[i][j])); 
+		} 
+	} 
+	Vec2i P; 
+	for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) { 
+		for (P.y=bboxmin.y; P.y<=bboxmax.y; P.y++) { 
+			Vec3f bc_screen  = barycentric(pts, P); 
+			if (bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0) continue; 
+			image.set(P.x, P.y, color); 
+		} 
+	} 
+} 
 
-std::vector<Vec3f> lineSeries(Vec3f v0, Vec3f v1) {
-	std::vector<Vec3f> result;
-
-	// a type to store the index of the steepest dimension in the line between
-	// the two vectors
-	enum steepest_dim_t {X = 0, Y = 1, Z = 1};
-
-	steepest_dim_t steepest;
-	{
-		const int x0 = v0.x;
-		const int y0 = v0.y;
-		const int z0 = v0.z;
-		const int x1 = v1.x;
-		const int y1 = v1.y;
-		const int z1 = v1.z;
-
-		if(std::abs(x0-x1) > std::abs(y0-y1)) {
-			if(std::abs(x0-x1) > std::abs(z0-z1)) {
-				steepest = X;
-			} else {
-				steepest = Z;
-			}
-		} else {
-			if(std::abs(z0-z1) > std::abs(y0-y1)) {
-				steepest = Z;
-			} else {
-				steepest = Y;
-			}
-		}
-	}
-
-	if(v0[steepest] > v1[steepest]) {
-		std::swap(v0, v1);
-	}
-	for(int i=v0[steepest]; i<=v1[steepest]; i++) {
-		float t = (i-v0[steepest])/(float)(v1[steepest]-v0[steepest]);
-		Vec3f nextPoint;
-		for(int dim = 0; dim < 3; dim++) {
-			if(dim == steepest) {
-				nextPoint[dim] = i;
-			} else {
-				nextPoint[dim] = v0[dim]*(1.0-t) + v1[dim]*t;
-			}
-		}
-		result.push_back(nextPoint);
-	}
-
-	return result;
+Vec3i crossProduct(const Vec3i &u, const Vec3i &v) {
+	return Vec3i(u.y*v.z - u.z*v.y, u.z*v.x - u.x*v.z, u.x*v.y - u.y*v.x);
 }
 
-float distance(Vec3f v0, Vec3f v1) {
-	return sqrt(pow(v1.x - v0.x, 2) + pow(v1.y - v0.y, 2));
+Vec3f crossProduct(const Vec3f &u, const Vec3f &v) {
+	return Vec3f(u.y*v.z - u.z*v.y, u.z*v.x - u.x*v.z, u.x*v.y - u.y*v.x);
 }
