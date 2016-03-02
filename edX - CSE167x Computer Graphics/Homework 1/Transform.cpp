@@ -13,7 +13,7 @@ mat3 Transform::rotate(const float degrees, const vec3& axis) {
   const mat3 term2 = (1 - cos(radians)) * mat3(
     axis.x * axis.x, axis.x * axis.y, axis.x * axis.z,
     axis.x * axis.y, axis.y * axis.y, axis.y * axis.z,
-    axis.x * axis.z, axis.y * axis.x, axis.z * axis.z
+    axis.x * axis.z, axis.y * axis.z, axis.z * axis.z
   );
   const mat3 term3 = sin(radians) * mat3(
     0.0, axis.z, -1.0 * axis.y,
@@ -26,15 +26,15 @@ mat3 Transform::rotate(const float degrees, const vec3& axis) {
 
 // Transforms the camera left around the "crystal ball" interface
 void Transform::left(float degrees, vec3& eye, vec3& up) {
-  const vec3 rotationAxis = vec3(0.0, 1.0, 0.0);
+  const vec3 rotationAxis = glm::normalize(up);
   eye = Transform::rotate(degrees, rotationAxis) * eye;
 }
 
 // Transforms the camera up around the "crystal ball" interface
 void Transform::up(float degrees, vec3& eye, vec3& up) {
-  const vec3 rotationAxis = vec3(-1.0, 0.0, 0.0);
+  const vec3 rotationAxis = glm::normalize(glm::cross(eye, up));
   eye = Transform::rotate(degrees, rotationAxis) * eye;
-  up = Transform::rotate(degrees, rotationAxis) * up;
+  up = glm::normalize(Transform::rotate(degrees, rotationAxis) * up);
 }
 
 mat4 Transform::lookAt(vec3 eye, vec3 up) {

@@ -103,6 +103,28 @@ void leftByNegativeAngle() {
 	testAssert(vec3(0.0, 1.0, 0.0), up, "up coordinates incorrect");
 }
 
+void leftByCantedPositiveAngle() {
+	std::cout << "leftByCantedPositiveAngle:" << std::endl;
+	const float angle = 90.0;
+	vec3 eye = vec3(0.0, 0.0, 5.0);
+	vec3 up = vec3(0.5, 0.5, 0.0);
+	Transform::left(angle, eye, up);
+	testAssert(vec3(2.236067977, -2.236067977, 0.0), eye, "eye coordinates incorrect");
+	testAssert(vec3(0.5, 0.5, 0.0), up, "up coordinates incorrect");
+}
+
+void leftByRepeatedPositiveAngle() {
+	std::cout << "leftByRepeatedPositiveAngle:" << std::endl;
+	const float angle = 90.0;
+	vec3 eye = vec3(0.0, 0.0, 5.0);
+	vec3 up = vec3(0.5, 0.5, 0.0);
+	for(int i = 0; i < 32; i++) {
+		Transform::left(angle, eye, up);
+	}
+	testAssert(vec3(2.236067977, -2.236067977, 0.0), eye, "eye coordinates incorrect");
+	testAssert(vec3(0.5, 0.5, 0.0), up, "up coordinates incorrect");
+}
+
 void upByPositiveAngle() {
 	std::cout << "upByPositiveAngle:" << std::endl;
 	const float angle = 90.0;
@@ -123,6 +145,28 @@ void upByNegativeAngle() {
 	testAssert(vec3(0.0, 0.0, 1.0), up, "up coordinates incorrect");
 }
 
+void upByCantedPositiveAngle() {
+	std::cout << "upByCantedPositiveAngle:" << std::endl;
+	const float angle = 90.0;
+	vec3 eye = vec3(2.236067977, 2.236067977, 0.0);
+	vec3 up = vec3(-0.5, 0.5, 0.0);
+	Transform::up(angle, eye, up);
+	testAssert(vec3(-2.236067977, 2.236067977, 0.0), eye, "eye coordinates incorrect");
+	testAssert(vec3(-0.5, -0.5, 0.0), up, "up coordinates incorrect");
+}
+
+void upByRepeatedPositiveAngle() {
+	std::cout << "upByRepeatedPositiveAngle:" << std::endl;
+	const float angle = 90.0;
+	vec3 eye = vec3(2.236067977, 2.236067977, 0.0);
+	vec3 up = vec3(-0.5, 0.5, 0.0);
+	for(int i = 0; i < 32; i++) {
+		Transform::up(angle, eye, up);
+	}
+	testAssert(vec3(-2.236067977, 2.236067977, 0.0), eye, "eye coordinates incorrect");
+	testAssert(vec3(-0.5, -0.5, 0.0), up, "up coordinates incorrect");
+}
+
 void lookAt() {
 	std::cout << "lookAt:" << std::endl;
 	const vec3 eye = vec3(1.0, 0.0, 0.0);
@@ -135,7 +179,11 @@ void lookAt() {
 int main(int argc,char* argv[]) {
 	leftByPositiveAngle();
 	leftByNegativeAngle();
+	leftByCantedPositiveAngle();
+	leftByRepeatedPositiveAngle();
 	upByPositiveAngle();
 	upByNegativeAngle();
+	upByCantedPositiveAngle();
+	upByRepeatedPositiveAngle();
 	lookAt();
 }
