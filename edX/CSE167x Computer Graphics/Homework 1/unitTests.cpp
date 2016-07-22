@@ -61,10 +61,10 @@ bool eq(const mat4& a, const mat4& b, const float epsilon) {
 
 bool testAssert(const vec3& expected, const vec3& actual, const std::string& message) {
 	if(eq(expected, actual, EPSILON)) {
-		std::cout << "\tPASSED" << std::endl;
+		std::cout << "\t\033[0;32mPASSED\033[0m" << std::endl;
 		return true;
 	} else {
-		std::cout << "FAILED (" << message << ")\n\texpected: ";
+		std::cout << "\t\033[1;31mFAILED\033[0m (" << message << ")\n\texpected: ";
 		std::cout << format(expected) << "; actual: " << format(actual) << std::endl;
 		return false;
 	}
@@ -72,10 +72,10 @@ bool testAssert(const vec3& expected, const vec3& actual, const std::string& mes
 
 bool testAssert(const mat4& expected, const mat4& actual, const std::string& message) {
 	if(eq(expected, actual, EPSILON)) {
-		std::cout << "\tPASSED" << std::endl;
+		std::cout << "\t\033[0;32mPASSED\033[0m" << std::endl;
 		return true;
 	} else {
-		std::cout << "FAILED (" << message << ")"
+		std::cout << "\t\033[1;31mFAILED\033[0m (" << message << ")"
 			<< "\nexpected:\n" << format(expected)
 			<< "\nactual:\n" << format(actual)
 			<< std::endl;
