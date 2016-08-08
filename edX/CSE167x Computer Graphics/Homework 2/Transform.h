@@ -3,6 +3,9 @@
 // You need to implement left, up and lookAt
 // Rotate is a helper function
 
+// unit tests
+#include <catch.hpp>
+
 // Include the helper glm library, including matrix transform extensions
 
 #include <glm/glm.hpp>
