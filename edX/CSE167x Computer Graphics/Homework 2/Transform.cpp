@@ -121,7 +121,7 @@ void Transform::up(float degrees, vec3& eye, vec3& up)
 {
   const vec3 rotationAxis = glm::normalize(glm::cross(eye, up));
   eye = Transform::rotate(degrees, rotationAxis) * eye;
-  up = glm::normalize(Transform::rotate(degrees, rotationAxis) * up);
+  up = Transform::rotate(degrees, rotationAxis) * up;
 }
 
 TEST_CASE("Transform::up()", "[transform][up]") {
