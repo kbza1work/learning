@@ -1,3 +1,5 @@
+#include "include/catch.hpp"
+
 #include "Transform.h"
 #include <glm/gtc/type_ptr.hpp>
 
