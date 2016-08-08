@@ -17,8 +17,8 @@ RM = /bin/rm -f
 all: transform
 tests: unitTests
 
-unitTests: Transform.o Transform.h unitTests.o
-	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o $(INCFLAGS) $(LDFLAGS) 
+unitTests: Transform.o Transform.h unitTests.o TransformTests.o
+	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o TransformTests.o $(INCFLAGS) $(LDFLAGS) 
 
 transform: main.o shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h grader.o UCSD/grader.h
 	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o grader.o $(INCFLAGS) $(LDFLAGS) 
@@ -34,8 +34,12 @@ Transform.o: Transform.cpp Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp  
 grader.o: UCSD/grader.cpp UCSD/grader.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c UCSD/grader.cpp
+
 unitTests.o: unitTests.cpp 
 	$(CC) $(CFLAGS) $(INCFLAGS) -c unitTests.cpp  
+TransformTests.o: TransformTests.cpp
+	$(CC) $(CFLAGS) $(INCFLAGS) -c TransformTests.cpp  
+
 clean: 
 	$(RM) *.o transforms unitTests *.png
 
