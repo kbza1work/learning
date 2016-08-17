@@ -1,6 +1,7 @@
 #include "include/catch.hpp"
 
 #include "Transform.h"
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 TEST_CASE("Transform::left()", "[transform][left]") {
