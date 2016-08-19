@@ -82,10 +82,10 @@ mat4 Transform::scale(const float &sx, const float &sy, const float &sz)
 mat4 Transform::translate(const float &tx, const float &ty, const float &tz)
 {
     return mat4(
-        1.0, 0.0, 0.0, tx,
-        0.0, 1.0, 0.0, ty,
-        0.0, 0.0, 1.0, tz,
-        0.0, 0.0, 0.0, 1.0
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        tx,  ty,  tz,  1.0
     );
 }
 

@@ -40,7 +40,7 @@ unitTests.o: unitTests.cpp types.h variables.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c unitTests.cpp
 TransformTests.o: TransformTests.cpp types.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c TransformTests.cpp
-readfileTests.o: readfileTests.cpp types.h readfile.h
+readfileTests.o: readfileTests.cpp types.h readfile.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfileTests.cpp
 
 clean:

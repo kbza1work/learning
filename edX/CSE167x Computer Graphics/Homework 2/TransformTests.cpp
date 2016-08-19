@@ -184,7 +184,7 @@ TEST_CASE("Transform::lookAt()", "[transform][lookAt]") {
 TEST_CASE("Transform::scale()", "[transform][scale]") {
   SECTION("by a positive factor only in the x-direction") {
     const vec4 original = vec4(2.8, -1.5, 5.3, 1.0);
-    const vec4 result = original * Transform::scale(2.0, 1.0, 1.0);
+    const vec4 result = Transform::scale(2.0, 1.0, 1.0) * original;
 
     SECTION("x-component") {
       REQUIRE(result.x == Approx(5.6));
@@ -202,7 +202,7 @@ TEST_CASE("Transform::scale()", "[transform][scale]") {
 
   SECTION("by a uniform positive factor") {
     const vec4 original = vec4(2.8, -1.5, 5.3, 1.0);
-    const vec4 result = original * Transform::scale(3.0, 3.0, 3.0);
+    const vec4 result = Transform::scale(3.0, 3.0, 3.0) * original ;
 
     SECTION("x-component") {
       REQUIRE(result.x == Approx(8.4));
@@ -220,7 +220,7 @@ TEST_CASE("Transform::scale()", "[transform][scale]") {
 
   SECTION("mirroring the y-component") {
     const vec4 original = vec4(2.8, -1.5, 5.3, 1.0);
-    const vec4 result = original * Transform::scale(1.0, -3.0, 1.0);
+    const vec4 result = Transform::scale(1.0, -3.0, 1.0) * original ;
 
     SECTION("x-component") {
       REQUIRE(result.x == Approx(2.8));
@@ -238,7 +238,7 @@ TEST_CASE("Transform::scale()", "[transform][scale]") {
 
   SECTION("decimating the z-component") {
     const vec4 original = vec4(2.8, -1.5, 5.3, 1.0);
-    const vec4 result = original * Transform::scale(1.0, 1.0, 0.0);
+    const vec4 result = Transform::scale(1.0, 1.0, 0.0) * original ;
 
     SECTION("x-component") {
       REQUIRE(result.x == Approx(2.8));
@@ -258,7 +258,7 @@ TEST_CASE("Transform::scale()", "[transform][scale]") {
 TEST_CASE("Transform::translate()", "[transform][translate]") {
   SECTION("in the x direction") {
     const vec4 position = vec4(2.1, 3.5, -4.9, 1.0);
-    vec4 result = position * Transform::translate(5.2, 0.0, 0.0);
+    vec4 result = Transform::translate(5.2, 0.0, 0.0) * position;
     result = result/(result.w);
 
     SECTION("x-component") {
@@ -277,7 +277,7 @@ TEST_CASE("Transform::translate()", "[transform][translate]") {
 
   SECTION("diagonally") {
     const vec4 position = vec4(2.1, 3.5, -4.9, 1.0);
-    vec4 result = position * Transform::translate(0.8, -1.9, -9.8);
+    vec4 result = Transform::translate(0.8, -1.9, -9.8) * position;
     result = result/(result.w);
 
     SECTION("x-component") {
