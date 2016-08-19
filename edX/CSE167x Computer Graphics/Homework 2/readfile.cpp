@@ -124,16 +124,20 @@ void parseLine(const string &str, stack<mat4> &transfstack)
       } else {
         validinput = readvals(s, 8, values); // Position/color for lts.
         if (validinput) {
-          size_t offset = numused * 4;
-          lightposn[offset] = values[0];
-          lightposn[offset + 1] = values[1];
-          lightposn[offset + 2] = values[2];
-          lightposn[offset + 3] = values[3];
+          GLfloat lightPositions[4];
+          for(int i = 0; i < 4; i++) {
+            lightPositions[i] = values[i];
+          }
+          matransform(transfstack, lightPositions);
 
-          lightcolor[offset] = values[4];
-          lightcolor[offset + 1] = values[5];
-          lightcolor[offset + 2] = values[6];
-          lightcolor[offset + 3] = values[7];
+          size_t offset = numused * 4;
+          for(i = 0; i < 4; i++) {
+            lightposn[offset + i] = lightPositions[i];
+          }
+
+          for(i = 0; i < 4; i++) {
+            lightcolor[offset + i] = values[4 + i];
+          }
 
           ++numused;
         }
