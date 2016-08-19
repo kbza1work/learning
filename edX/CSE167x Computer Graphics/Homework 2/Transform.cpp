@@ -7,38 +7,30 @@
 #include "Transform.h"
 #include <glm/gtc/type_ptr.hpp>
 
-// Helper rotation function.  Please implement this.
-mat3 Transform::rotate(const float degrees, const vec3& axis)
+mat4 Transform::rotate(const float degrees, const vec3& axis)
 {
+  const vec3 nAxis = glm::normalize(axis);
   const float radians = glm::radians(degrees);
-  const mat3 I(1.0);
+  const mat4 I(1.0);
 
-  const mat3 term1 = cos(radians) * I;
-  const mat3 term2 = (1 - cos(radians)) * mat3(
-    axis.x * axis.x, axis.x * axis.y, axis.x * axis.z,
-    axis.x * axis.y, axis.y * axis.y, axis.y * axis.z,
-    axis.x * axis.z, axis.y * axis.z, axis.z * axis.z
+  mat4 term1 = cos(radians) * I;
+  term1[3][3] = 1.0;
+
+  const mat4 term2 = (1 - cos(radians)) * mat4(
+    nAxis.x * nAxis.x, nAxis.x * nAxis.y, nAxis.x * nAxis.z, 0.0,
+    nAxis.x * nAxis.y, nAxis.y * nAxis.y, nAxis.y * nAxis.z, 0.0,
+    nAxis.x * nAxis.z, nAxis.y * nAxis.z, nAxis.z * nAxis.z, 0.0,
+    0.0,               0.0,               0.0,               0.0
   );
-  const mat3 term3 = sin(radians) * mat3(
-    0.0, axis.z, -1.0 * axis.y,
-    -1.0 * axis.z, 0.0, axis.x,
-    axis.y, -1.0 * axis.x, 0.0
+
+  const mat4 term3 = sin(radians) * mat4(
+    0.0,            nAxis.z,        -1.0 * nAxis.y, 0.0,
+    -1.0 * nAxis.z, 0.0,            nAxis.x,        0.0,
+    nAxis.y,        -1.0 * nAxis.x, 0.0,            0.0,
+    0.0,            0.0,            0.0,            0.0
   );
 
   return term1 + term2 + term3;
-}
-
-void Transform::left(float degrees, vec3& eye, vec3& up)
-{
-  const vec3 rotationAxis = glm::normalize(up);
-  eye = Transform::rotate(degrees, rotationAxis) * eye;
-}
-
-void Transform::up(float degrees, vec3& eye, vec3& up)
-{
-  const vec3 rotationAxis = glm::normalize(glm::cross(eye, up));
-  eye = Transform::rotate(degrees, rotationAxis) * eye;
-  up = Transform::rotate(degrees, rotationAxis) * up;
 }
 
 mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up)
