@@ -27,7 +27,7 @@ main.o: main.cpp shaders.h Transform.h variables.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
 shaders.o: shaders.cpp shaders.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c shaders.cpp
-readfile.o: readfile.cpp readfile.h variables.h types.h
+readfile.o: readfile.cpp readfile.h variables.h types.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
 display.o: display.cpp variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c display.cpp

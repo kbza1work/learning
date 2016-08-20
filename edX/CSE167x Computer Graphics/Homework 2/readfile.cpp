@@ -29,6 +29,7 @@
 #include <stack>
 #include <GL/glut.h>
 #include "types.h"
+#include "Transform.h"
 
 using namespace std;
 #include "variables.h"
@@ -240,12 +241,9 @@ void parseLine(const string &str, stack<mat4> &transfstack)
     else if (cmd == "translate") {
       validinput = readvals(s,3,values);
       if (validinput) {
-
-        // YOUR CODE FOR HW 2 HERE.
-        // Think about how the transformation stack is affected
-        // You might want to use helper functions on top of file.
-        // Also keep in mind what order your matrix is!
-
+        const mat4 translation =
+          Transform::translate(values[0], values[1], values[2]);
+        rightmultiply(translation, transfstack);
       }
     }
     else if (cmd == "scale") {

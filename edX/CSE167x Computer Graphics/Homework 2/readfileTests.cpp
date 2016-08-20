@@ -143,3 +143,32 @@ TEST_CASE("reading light data", "[readfile][light]") {
     }
   }
 }
+
+
+TEST_CASE("reading a translation", "[readfile][translate]") {
+  resetGlobals();
+
+  SECTION("when there are no transforms active") {
+    std::stack <mat4> transfstack;
+    transfstack.push(mat4(1.0));
+    parseLine("translate 1.0 2.0 3.0", transfstack);
+    const vec4 result = transfstack.top() * vec4(1.0, 2.0, 3.0, 1.0);
+
+    REQUIRE(result.x == Approx(2.0));
+    REQUIRE(result.y == Approx(4.0));
+    REQUIRE(result.z == Approx(6.0));
+    REQUIRE(result.w == Approx(1.0));
+  }
+
+  SECTION("when there is an active transform") {
+    std::stack <mat4> transfstack;
+    transfstack.push(Transform::rotate(90.0, vec3(0.0, 0.0, 1.0)));
+    parseLine("translate 0.0 -2.0 -1.0", transfstack);
+    const vec4 result = transfstack.top() * vec4(1.0, 1.0, 1.0, 1.0);
+
+    REQUIRE(result.x == Approx(1.0));
+    REQUIRE(result.y == Approx(1.0));
+    REQUIRE(result.z == Approx(0.0));
+    REQUIRE(result.w == Approx(1.0));
+  }
+}
