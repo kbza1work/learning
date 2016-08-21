@@ -257,14 +257,9 @@ void parseLine(const string &str, stack<mat4> &transfstack)
     else if (cmd == "rotate") {
       validinput = readvals(s,4,values);
       if (validinput) {
-
-        // YOUR CODE FOR HW 2 HERE.
-        // values[0..2] are the axis, values[3] is the angle.
-        // You may want to normalize the axis (or in Transform::rotate)
-        // See how the stack is affected, as above.
-        // Note that rotate returns a mat3.
-        // Also keep in mind what order your matrix is!
-
+        const mat4 newTransform =
+          Transform::rotate(values[3], vec3(values[0], values[1], values[2]));
+        rightmultiply(newTransform, transfstack);
       }
     }
 

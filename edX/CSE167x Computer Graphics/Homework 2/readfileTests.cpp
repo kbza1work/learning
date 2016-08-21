@@ -199,3 +199,31 @@ TEST_CASE("reading a scale", "[readfile][scale]") {
     REQUIRE(result.w == Approx(1.0));
   }
 }
+
+TEST_CASE("reading a rotation", "[readfile][rotation]") {
+  resetGlobals();
+
+  SECTION("when there are no transforms active") {
+    std::stack <mat4> transfstack;
+    transfstack.push(mat4(1.0));
+    parseLine("rotate 0.0 1.0 0.0 90", transfstack);
+    const vec4 result = transfstack.top() * vec4(0.0, -1.0, 1.0, 1.0);
+
+    REQUIRE(result.x == Approx(1.0));
+    REQUIRE(result.y == Approx(-1.0));
+    REQUIRE(result.z == Approx(0.0));
+    REQUIRE(result.w == Approx(1.0));
+  }
+
+  SECTION("when there is an active transform") {
+    std::stack <mat4> transfstack;
+    transfstack.push(Transform::translate(-1.0, 2.0, -5.0));
+    parseLine("rotate 0.0 1.0 0.0 90", transfstack);
+    const vec4 result = transfstack.top() * vec4(0.0, -1.0, 1.0, 1.0);
+
+    REQUIRE(result.x == Approx(0.0));
+    REQUIRE(result.y == Approx(1.0));
+    REQUIRE(result.z == Approx(-5.0));
+    REQUIRE(result.w == Approx(1.0));
+  }
+}
