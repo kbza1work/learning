@@ -42,6 +42,172 @@ TEST_CASE("Transform::rotate()", "[transform][rotate]") {
   }
 }
 
+TEST_CASE("Transform::left()", "[transform][left]") {
+  SECTION("by a positive angle around the y-axis") {
+    const float angle = 90.0;
+    vec3 eye = vec3(0.0, 0.0, 5.0);
+    vec3 up = vec3(0.0, 5.0, 0.0);
+    Transform::left(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(5.0));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(0.0));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(0.0));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(5.0));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(0.0));
+    }
+  }
+
+  SECTION("by a negative angle around the y-axis") {
+    const float angle = -90.0;
+    vec3 eye = vec3(0.0, 0.0, 5.0);
+    vec3 up = vec3(0.0, 5.0, 0.0);
+    Transform::left(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(-5.0));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(0.0));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(0.0));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(5.0));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(0.0));
+    }
+  }
+
+  SECTION("by a canted positive angle") {
+    const float angle = 90.0;
+    vec3 eye = vec3(0.0, 0.0, 5.0);
+    vec3 up = vec3(0.5, 0.5, 0.0);
+    Transform::left(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(3.535533906));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(-3.535533906));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(0.5));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(0.5));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(0.0));
+    }
+  }
+}
+
+TEST_CASE("Transform::up()", "[transform][up]") {
+  SECTION("by a positive angle around the y-axis") {
+    const float angle = 90.0;
+    vec3 eye = vec3(0.0, 0.0, 5.0);
+    vec3 up = vec3(0.0, 5.0, 0.0);
+    Transform::up(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(0.0));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(5.0));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(0.0));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(0.0));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(-5.0));
+    }
+  }
+
+  SECTION("by a negative angle around the y-axis") {
+    const float angle = -90.0;
+    vec3 eye = vec3(0.0, 0.0, 5.0);
+    vec3 up = vec3(0.0, 5.0, 0.0);
+    Transform::up(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(0.0));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(-5.0));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(0.0));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(0.0));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(5.0));
+    }
+  }
+
+  SECTION("by a canted positive angle") {
+    const float angle = 90.0;
+    vec3 eye = vec3(5.0, 5.0, 0.0);
+    vec3 up = vec3(-0.5, 0.5, 0.0);
+    Transform::up(angle, eye, up);
+
+    SECTION("eye x-component") {
+      REQUIRE(eye.x == Approx(-5.0));
+    }
+    SECTION("eye y-component") {
+      REQUIRE(eye.y == Approx(5.0));
+    }
+    SECTION("eye z-component") {
+      REQUIRE(eye.z == Approx(0.0));
+    }
+
+    SECTION("up x-component") {
+      REQUIRE(up.x == Approx(-0.5));
+    }
+    SECTION("up y-component") {
+      REQUIRE(up.y == Approx(-0.5));
+    }
+    SECTION("up z-component") {
+      REQUIRE(up.z == Approx(0.0));
+    }
+  }
+}
+
 TEST_CASE("Transform::lookAt()", "[transform][lookAt]") {
   SECTION("looking at the origin") {
     const vec3 eye = vec3(1.0, 0.0, 0.0);
@@ -166,4 +332,3 @@ TEST_CASE("Transform::translate()", "[transform][translate]") {
     }
   }
 }
-

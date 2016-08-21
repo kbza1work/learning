@@ -33,6 +33,19 @@ mat4 Transform::rotate(const float degrees, const vec3& axis)
   return term1 + term2 + term3;
 }
 
+void Transform::left(float degrees, vec3& eye, vec3& up)
+{
+  const vec3 rotationAxis = glm::normalize(up);
+  eye = mat3(Transform::rotate(degrees, rotationAxis)) * eye;
+}
+
+void Transform::up(float degrees, vec3& eye, vec3& up)
+{
+  const vec3 rotationAxis = glm::normalize(glm::cross(eye, up));
+  eye = mat3(Transform::rotate(degrees, rotationAxis)) * eye;
+  up = mat3(Transform::rotate(degrees, rotationAxis)) * up;
+}
+
 mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up)
 {
   const vec3 f = glm::normalize(vec3(
