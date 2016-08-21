@@ -144,7 +144,6 @@ TEST_CASE("reading light data", "[readfile][light]") {
   }
 }
 
-
 TEST_CASE("reading a translation", "[readfile][translate]") {
   resetGlobals();
 
@@ -169,6 +168,34 @@ TEST_CASE("reading a translation", "[readfile][translate]") {
     REQUIRE(result.x == Approx(1.0));
     REQUIRE(result.y == Approx(1.0));
     REQUIRE(result.z == Approx(0.0));
+    REQUIRE(result.w == Approx(1.0));
+  }
+}
+
+TEST_CASE("reading a scale", "[readfile][scale]") {
+  resetGlobals();
+
+  SECTION("when there are no transforms active") {
+    std::stack <mat4> transfstack;
+    transfstack.push(mat4(1.0));
+    parseLine("scale 1.0 2.0 3.0", transfstack);
+    const vec4 result = transfstack.top() * vec4(0.0, -1.5, 0.7, 1.0);
+
+    REQUIRE(result.x == Approx(0.0));
+    REQUIRE(result.y == Approx(-3.0));
+    REQUIRE(result.z == Approx(2.1));
+    REQUIRE(result.w == Approx(1.0));
+  }
+
+  SECTION("when there is an active transform") {
+    std::stack <mat4> transfstack;
+    transfstack.push(Transform::translate(5.0, -5.0, 0.0));
+    parseLine("scale 1.0 2.0 3.0", transfstack);
+    const vec4 result = transfstack.top() * vec4(0.0, -1.5, 0.7, 1.0);
+
+    REQUIRE(result.x == Approx(5.0));
+    REQUIRE(result.y == Approx(-8.0));
+    REQUIRE(result.z == Approx(2.1));
     REQUIRE(result.w == Approx(1.0));
   }
 }
