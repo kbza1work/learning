@@ -227,3 +227,32 @@ TEST_CASE("reading a rotation", "[readfile][rotation]") {
     REQUIRE(result.w == Approx(1.0));
   }
 }
+
+TEST_CASE("reading camera information", "[readfile][camera]") {
+  resetGlobals();
+
+  std::stack <mat4> transfstack;
+  transfstack.push(Transform::translate(-1.0, 2.0, -5.0));
+  parseLine("camera 0.0 5.0 1.0 -11.0 0.0 1.0 0.0 -5.0 0.0 64.4", transfstack);
+
+  SECTION("initial eye vector should be set") {
+    REQUIRE(eyeinit.x == Approx(0.0));
+    REQUIRE(eyeinit.y == Approx(5.0));
+    REQUIRE(eyeinit.z == Approx(1.0));
+  }
+  SECTION("center vector should be set") {
+    REQUIRE(center.x == Approx(-11.0));
+    REQUIRE(center.y == Approx(0.0));
+    REQUIRE(center.z == Approx(1.0));
+  }
+
+  SECTION("initial up vector should be normalized and set") {
+    REQUIRE(upinit.x == Approx(0.0));
+    REQUIRE(upinit.y == Approx(-1.0));
+    REQUIRE(upinit.z == Approx(0.0));
+  }
+
+  SECTION("fovy should be set") {
+    REQUIRE(fovy == Approx(64.4));
+  }
+}

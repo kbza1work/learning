@@ -191,13 +191,10 @@ void parseLine(const string &str, stack<mat4> &transfstack)
     } else if (cmd == "camera") {
       validinput = readvals(s,10,values); // 10 values eye cen up fov
       if (validinput) {
-
-        // YOUR CODE FOR HW 2 HERE
-        // Use all of values[0...9]
-        // You may need to use the upvector fn in Transform.cpp
-        // to set up correctly.
-        // Set eyeinit upinit center fovy in variables.h
-
+        eyeinit = vec3(values[0], values[1], values[2]);
+        center = vec3(values[3], values[4], values[5]);
+        upinit = glm::normalize(vec3(values[6], values[7], values[8]));
+        fovy = values[9];
       }
     }
 
