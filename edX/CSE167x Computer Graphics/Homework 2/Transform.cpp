@@ -68,10 +68,16 @@ mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up)
 
 mat4 Transform::perspective(float fovy, float aspect, float zNear, float zFar)
 {
-  mat4 ret;
-  // YOUR CODE FOR HW2 HERE
-  // New, to implement the perspective transform as well.
-  return ret;
+  // perspective matrix formula taken from the GLM documentation at
+  // https://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml
+  fovy = glm::radians(fovy);
+  const float f = 1.0/glm::tan(fovy/2.0);
+  return mat4(
+    f/aspect, 0.0f,                            0.0f,  0.0f,
+        0.0f,    f,                            0.0f,  0.0f,
+        0.0f, 0.0f,   (zFar + zNear)/(zNear - zFar), -1.0f,
+        0.0f, 0.0f, 2 * zFar * zNear/(zNear - zFar),  0.0f
+  );
 }
 
 mat4 Transform::scale(const float &sx, const float &sy, const float &sz)

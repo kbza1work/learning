@@ -219,6 +219,18 @@ TEST_CASE("Transform::lookAt()", "[transform][lookAt]") {
   }
 }
 
+TEST_CASE("Transform::perspective()", "[transform][perspective]") {
+  SECTION("with arbitrary inputs") {
+    const float fovy = 54.78;
+    const float aspect = 9.23;
+    const float zNear = 2.31;
+    const float zFar = 345.89;
+    const mat4 result = Transform::perspective(fovy, aspect, zNear, zFar);
+    const mat4 expected = glm::perspective(fovy, aspect, zNear, zFar);
+    REQUIRE(*(glm::value_ptr(result)) == *(glm::value_ptr(expected)));
+  }
+}
+
 TEST_CASE("Transform::scale()", "[transform][scale]") {
   SECTION("by a positive factor only in the x-direction") {
     const vec4 original = vec4(2.8, -1.5, 5.3, 1.0);
