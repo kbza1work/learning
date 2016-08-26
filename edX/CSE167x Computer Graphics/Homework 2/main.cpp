@@ -28,25 +28,20 @@ void display(void);  // prototype for display function.
 Grader grader;
 bool allowGrader = false;
 
-// Uses the Projection matrices (technically deprecated) to set perspective
-// We could also do this in a more modern fashion with glm.
 void reshape(int width, int height)
 {
   w = width;
   h = height;
-  mat4 mv; // just like for lookat
 
-  glMatrixMode(GL_PROJECTION);
   float aspect = w / (float) h, zNear = 0.1, zFar = 99.0;
 
   // I am changing the projection stuff to be consistent with lookAt
   if (useGlu) {
-    mv = glm::perspective(fovy,aspect,zNear,zFar); 
+    projectionMatrix = glm::perspective(fovy,aspect,zNear,zFar);
   } else {
-    mv = Transform::perspective(fovy,aspect,zNear,zFar); 
+    projectionMatrix = Transform::perspective(fovy,aspect,zNear,zFar);
   }
 
-  glLoadMatrixf(&mv[0][0]); 
   glViewport(0, 0, w, h);
 }
 
@@ -166,9 +161,8 @@ void specialKey(int key, int x, int y)
   glutPostRedisplay();
 }
 
-void init() 
+void initShaders()
 {
-  // Initialize shaders
   vertexshader = initshaders(GL_VERTEX_SHADER, "shaders/light.vert.glsl");
   fragmentshader = initshaders(GL_FRAGMENT_SHADER, "shaders/light.frag.glsl");
   shaderprogram = initprogram(vertexshader, fragmentshader);
@@ -181,6 +175,8 @@ void init()
   specularcol = glGetUniformLocation(shaderprogram,"specular");
   emissioncol = glGetUniformLocation(shaderprogram,"emission");
   shininesscol = glGetUniformLocation(shaderprogram,"shininess");
+  modelViewProjectionMatrixcol =
+    glGetUniformLocation(shaderprogram, "modelViewProjectionMatrix");
 }
 
 int main(int argc, char* argv[])
@@ -194,7 +190,7 @@ int main(int argc, char* argv[])
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
   glutCreateWindow("HW2: Scene Viewer");
-  init();
+  initShaders();
   readfile(argv[1]);
   glutDisplayFunc(display);
   glutSpecialFunc(specialKey);

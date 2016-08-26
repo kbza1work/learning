@@ -14,6 +14,7 @@
 #include <stack>
 #include <GL/glut.h>
 #include "Transform.h"
+#include "printError.h"
 
 using namespace std ;
 #include "variables.h"
@@ -28,6 +29,7 @@ void transformvec (const GLfloat input[4], GLfloat output[4])
 {
   GLfloat modelview[16]; // in column major order
   glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
+  printOpenGLError();
 
   for (int i = 0 ; i < 4 ; i++) {
     output[i] = 0;
@@ -40,37 +42,34 @@ void transformvec (const GLfloat input[4], GLfloat output[4])
 void display()
 {
   glClearColor(0, 0, 1, 0);
+  printOpenGLError();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // I'm including the basic matrix setup for model view to
-  // give some sense of how this works.
-
-  glMatrixMode(GL_MODELVIEW);
-  mat4 mv;
+  printOpenGLError();
 
   // Either use the built-in lookAt function or the lookAt implemented by the user.
+  mat4 mv;
   if (useGlu) {
     mv = glm::lookAt(eye,center,up);
   } else {
     mv = Transform::lookAt(eye,center,up);
   }
 
-  glLoadMatrixf(&mv[0][0]);
-
   // Lights are transformed by current modelview matrix.
   // The shader can't do this globally.
   // So we need to do so manually.
   if (numused) {
     glUniform1i(enablelighting,true);
+    printOpenGLError();
 
-    // YOUR CODE FOR HW 2 HERE.  
-    // You need to pass the light positions and colors to the shader. 
-    // glUniform4fv() and similar functions will be useful. See FAQ for help with these functions.
-    // The lightransf[] array in variables.h and transformvec() might also be useful here.
-    // Remember that light positions must be transformed by modelview.  
-
+    glUniform4fv(lightpos, numused, lightposn);
+    printOpenGLError();
+    glUniform4fv(lightcol, numused, lightcolor);
+    printOpenGLError();
+    glUniform1i(numusedcol, numused);
+    printOpenGLError();
   } else {
     glUniform1i(enablelighting,false);
+    printOpenGLError();
   }
 
   // Transformations for objects, involving translation and scaling
@@ -78,33 +77,39 @@ void display()
   sc = Transform::scale(sx,sy,1.0);
   tr = Transform::translate(tx,ty,0.0);
 
-  // YOUR CODE FOR HW 2 HERE.  
-  // You need to use scale, translate and modelview to 
-  // set up the net transformation matrix for the objects.  
-  // Account for GLM issues, matrix order, etc.  
-
-  glLoadMatrixf(&transf[0][0]); 
-
   for (int i = 0 ; i < numobjects ; i++) {
     object* obj = &(objects[i]); // Grabs an object struct.
 
-    // YOUR CODE FOR HW 2 HERE.
-    // Set up the object transformations
-    // And pass in the appropriate material properties
-    // Again glUniform() related functions will be useful
+    glUniform4fv(ambientcol, 1, obj->ambient);
+    printOpenGLError();
+    glUniform4fv(diffusecol, 1, obj->diffuse);
+    printOpenGLError();
+    glUniform4fv(specularcol, 1, obj->specular);
+    printOpenGLError();
+    glUniform4fv(emissioncol, 1, obj->emission);
+    printOpenGLError();
+    glUniform1f(shininesscol, obj->shininess);
+    printOpenGLError();
+
+    const mat4 mvp = obj->transform * tr * sc * mv * projectionMatrix;
+    glUniformMatrix4fv(modelViewProjectionMatrixcol, 1, GL_FALSE, &mvp[0][0]);
+    printOpenGLError();
 
     // Actually draw the object
     // We provide the actual glut drawing functions for you.
     // Remember that obj->type is notation for accessing struct fields
     if (obj->type == cube) {
       glutSolidCube(obj->size);
+      printOpenGLError();
     }
     else if (obj->type == sphere) {
       const int tessel = 20;
       glutSolidSphere(obj->size, tessel, tessel);
+      printOpenGLError();
     }
     else if (obj->type == teapot) {
       glutSolidTeapot(obj->size);
+      printOpenGLError();
     }
 
   }
