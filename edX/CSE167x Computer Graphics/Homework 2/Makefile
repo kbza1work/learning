@@ -17,11 +17,11 @@ RM = /bin/rm -f
 all: transform
 tests: unitTests
 
-unitTests: Transform.o Transform.h types.h unitTests.o TransformTests.o readfile.o readfile.h readfileTests.o
-	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o TransformTests.o readfile.o readfileTests.o $(INCFLAGS) $(LDFLAGS)
+unitTests: Transform.o Transform.h types.h unitTests.o TransformTests.o readfile.o readfile.h readfileTests.o printError.h printError.o
+	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o TransformTests.o readfile.o readfileTests.o printError.o $(INCFLAGS) $(LDFLAGS)
 
-transform: main.o types.h shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h grader.o UCSD/grader.h
-	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o grader.o $(INCFLAGS) $(LDFLAGS)
+transform: main.o types.h shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h printError.h printError.o grader.o UCSD/grader.h
+	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o printError.o grader.o $(INCFLAGS) $(LDFLAGS)
 
 main.o: main.cpp shaders.h Transform.h variables.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
@@ -29,10 +29,12 @@ shaders.o: shaders.cpp shaders.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c shaders.cpp
 readfile.o: readfile.cpp readfile.h variables.h types.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
-display.o: display.cpp variables.h
+display.o: display.cpp variables.h printError.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c display.cpp
 Transform.o: Transform.cpp Transform.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp
+printError.o: printError.cpp printError.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c printError.cpp
 grader.o: UCSD/grader.cpp UCSD/grader.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c UCSD/grader.cpp
 
