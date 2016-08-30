@@ -125,11 +125,12 @@ void display()
     printOpenGLError();
 
 // DEBUG
-std::cout << "eye = " << glm::to_string(eye) << std::endl;
-std::cout << "up = " << glm::to_string(up) << std::endl;
+std::cout << "eye (world coordinates) = " << glm::to_string(eye) << std::endl;
+std::cout << "up (world coordinates) = " << glm::to_string(up) << std::endl;
 DEBUG(obj->transform, "obj->transform");
 DEBUG(tr, "tr");
-DEBUG(modelViewMatrix, "modelview/look at");
+DEBUG(viewMatrix, "view");
+DEBUG(modelViewMatrix, "modelview");
 DEBUG(projectionMatrix, "projection");
 DEBUG(mvp, "final MVP");
 std::cout << std::endl;
