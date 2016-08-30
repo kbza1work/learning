@@ -65,7 +65,24 @@ void display()
     glUniform1i(enablelighting,true);
     printOpenGLError();
 
-    glUniform4fv(lightpos, numused, lightposn);
+    float[] transformedLightPositions = float[4 * numused];
+    for(int lightCount = 0; lightCount < numused; lightCount++) {
+      vec4 thisLightPosition = vec4(
+        lightpos[lightCount],
+        lightpos[lightCount + 1],
+        lightpos[lightCount + 2],
+        lightpos[lightCount + 3],
+      );
+
+      position = viewMatrix * thisLightPosition;
+
+      transformedLightPositions[lightCount] = position.x;
+      transformedLightPositions[lightCount + 1] = position.y;
+      transformedLightPositions[lightCount + 2] = position.z;
+      transformedLightPositions[lightCount + 3] = position.w;
+    }
+
+    glUniform4fv(lightpos, numused, transformedLightPositions);
     printOpenGLError();
     glUniform4fv(lightcol, numused, lightcolor);
     printOpenGLError();
