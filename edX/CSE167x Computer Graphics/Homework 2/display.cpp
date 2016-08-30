@@ -112,8 +112,7 @@ void display() {
     printOpenGLError();
 
     const mat4 modelViewMatrix = viewMatrix * sc * tr * obj->transform;
-    const mat4 normalMatrix =
-      glm::normalize(glm::transpose(glm::inverse(modelViewMatrix)));
+    const mat4 normalMatrix = glm::transpose(glm::inverse(modelViewMatrix));
     const mat4 mvp = projectionMatrix * modelViewMatrix;
 
     glUniformMatrix4fv(modelViewMatrixcol, 1, GL_FALSE, &modelViewMatrix[0][0]);
