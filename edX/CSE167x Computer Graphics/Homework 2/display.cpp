@@ -16,6 +16,10 @@
 #include "Transform.h"
 #include "printError.h"
 
+// DEBUG
+#include "debug.h"
+#include "glm/gtx/string_cast.hpp"
+
 using namespace std ;
 #include "variables.h"
 #include "readfile.h"
@@ -94,6 +98,16 @@ void display()
     const mat4 mvp = projectionMatrix * mv * sc * tr * obj->transform;
     glUniformMatrix4fv(modelViewProjectionMatrixcol, 1, GL_FALSE, &mvp[0][0]);
     printOpenGLError();
+
+// DEBUG
+std::cout << "eye = " << glm::to_string(eye) << std::endl;
+std::cout << "up = " << glm::to_string(up) << std::endl;
+DEBUG(obj->transform, "obj->transform");
+DEBUG(tr, "tr");
+DEBUG(modelViewMatrix, "modelview/look at");
+DEBUG(projectionMatrix, "projection");
+DEBUG(mvp, "final MVP");
+std::cout << std::endl;
 
     // Actually draw the object
     // We provide the actual glut drawing functions for you.

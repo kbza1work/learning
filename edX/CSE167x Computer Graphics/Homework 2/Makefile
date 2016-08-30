@@ -20,8 +20,8 @@ tests: unitTests
 unitTests: Transform.o Transform.h types.h unitTests.o TransformTests.o readfile.o readfile.h readfileTests.o printError.h printError.o
 	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o TransformTests.o readfile.o readfileTests.o printError.o $(INCFLAGS) $(LDFLAGS)
 
-transform: main.o types.h shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h printError.h printError.o grader.o UCSD/grader.h
-	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o printError.o grader.o $(INCFLAGS) $(LDFLAGS)
+transform: main.o types.h shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h printError.h printError.o grader.o UCSD/grader.h debug.o
+	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o printError.o grader.o debug.o $(INCFLAGS) $(LDFLAGS)
 
 main.o: main.cpp shaders.h Transform.h variables.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
@@ -44,6 +44,9 @@ TransformTests.o: TransformTests.cpp types.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c TransformTests.cpp
 readfileTests.o: readfileTests.cpp types.h readfile.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfileTests.cpp
+
+debug.o: debug.cpp debug.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c debug.cpp
 
 clean:
 	$(RM) *.o transforms unitTests *.png
