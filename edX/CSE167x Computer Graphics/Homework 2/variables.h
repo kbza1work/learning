@@ -80,6 +80,8 @@ EXTERN GLuint specularcol ;
 EXTERN GLuint emissioncol ;
 EXTERN GLuint shininesscol ;
 EXTERN GLuint modelViewProjectionMatrixcol;
+EXTERN GLuint modelViewMatrixcol;
+EXTERN GLuint normalMatrixcol;
 
 // Store the current projection matrix.
 EXTERN mat4 projectionMatrix;

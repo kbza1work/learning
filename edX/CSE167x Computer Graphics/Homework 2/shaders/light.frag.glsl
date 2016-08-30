@@ -5,14 +5,17 @@
    the shader.  As well as the material parameters of the object.  */
 
 in vec4 color;
-in vec3 mynormal;
-in vec4 myvertex;
+in vec3 normal;
+in vec4 vertex;
 
 const int numLights = 10;
 uniform bool enablelighting; // are we lighting at all (global).
 uniform vec4 lightposn[numLights]; // positions of lights
 uniform vec4 lightcolor[numLights]; // colors of lights
 uniform int numused;               // number of lights used
+
+uniform mat4 modelViewMatrix;
+uniform mat4 normalMatrix;
 
 // Now, set the material parameters.  These could be varying and/or bound to
 // a buffer.  But for now, I'll just make them uniform.

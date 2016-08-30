@@ -51,11 +51,11 @@ void display()
   printOpenGLError();
 
   // Either use the built-in lookAt function or the lookAt implemented by the user.
-  mat4 mv;
+  mat4 viewMatrix;
   if (useGlu) {
-    mv = glm::lookAt(eye,center,up);
+    viewMatrix = glm::lookAt(eye,center,up);
   } else {
-    mv = Transform::lookAt(eye,center,up);
+    viewMatrix = Transform::lookAt(eye,center,up);
   }
 
   // Lights are transformed by current modelview matrix.
@@ -95,7 +95,15 @@ void display()
     glUniform1f(shininesscol, obj->shininess);
     printOpenGLError();
 
-    const mat4 mvp = projectionMatrix * mv * sc * tr * obj->transform;
+    const mat4 modelViewMatrix = viewMatrix * sc * tr * obj->transform;
+    const mat4 normalMatrix =
+      glm::normalize(glm::transpose(glm::inverse(modelViewMatrix)));
+    const mat4 mvp = projectionMatrix * modelViewMatrix;
+
+    glUniformMatrix4fv(modelViewMatrixcol, 1, GL_FALSE, &modelViewMatrix[0][0]);
+    printOpenGLError();
+    glUniformMatrix4fv(normalMatrixcol, 1, GL_FALSE, &normalMatrix[0][0]);
+    printOpenGLError();
     glUniformMatrix4fv(modelViewProjectionMatrixcol, 1, GL_FALSE, &mvp[0][0]);
     printOpenGLError();
 
