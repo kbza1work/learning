@@ -43,8 +43,7 @@ void transformvec (const GLfloat input[4], GLfloat output[4])
   }
 }
 
-void display()
-{
+void display() {
   glClearColor(0, 0, 1, 0);
   printOpenGLError();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -141,13 +140,11 @@ std::cout << std::endl;
     if (obj->type == cube) {
       glutSolidCube(obj->size);
       printOpenGLError();
-    }
-    else if (obj->type == sphere) {
+    } else if (obj->type == sphere) {
       const int tessel = 20;
       glutSolidSphere(obj->size, tessel, tessel);
       printOpenGLError();
-    }
-    else if (obj->type == teapot) {
+    } else if (obj->type == teapot) {
       glutSolidTeapot(obj->size);
       printOpenGLError();
     }
