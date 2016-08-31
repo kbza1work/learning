@@ -131,7 +131,7 @@ void parseLine(const string &str, stack<mat4> &transfstack)
           }
           matransform(transfstack, lightPositions);
 
-          size_t offset = numused * 4;
+          const size_t offset = numused * 4;
           for(i = 0; i < 4; i++) {
             lightposn[offset + i] = lightPositions[i];
           }
