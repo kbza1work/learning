@@ -6,31 +6,48 @@ LDFLAGS = -framework GLUT -framework OpenGL -L./osxlib/ \
 		-L"/System/Library/Frameworks/OpenGL.framework/Libraries" \
 		-lGL -lGLU -lm -lstdc++ -lfreeimage
 else
-CFLAGS = -g -DGL_GLEXT_PROTOTYPES 
+CFLAGS = -g -DGL_GLEXT_PROTOTYPES
 INCFLAGS = -I./glm-0.9.2.7 -I./include/ -I/usr/X11R6/include -I/sw/include \
 		-I/usr/sww/include -I/usr/sww/pkg/Mesa/include
 LDFLAGS = -L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib \
 		-L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage
 endif
 
-RM = /bin/rm -f 
+RM = /bin/rm -f
 all: transform
-transform: main.o shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h grader.o UCSD/grader.h
-	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o grader.o $(INCFLAGS) $(LDFLAGS) 
-main.o: main.cpp shaders.h Transform.h variables.h
+tests: unitTests
+
+unitTests: Transform.o Transform.h types.h unitTests.o TransformTests.o readfile.o readfile.h readfileTests.o printError.h printError.o
+	$(CC) $(CFLAGS) -o unitTests Transform.o unitTests.o TransformTests.o readfile.o readfileTests.o printError.o $(INCFLAGS) $(LDFLAGS)
+
+transform: main.o types.h shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h printError.h printError.o grader.o UCSD/grader.h debug.o
+	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o display.o printError.o grader.o debug.o $(INCFLAGS) $(LDFLAGS)
+
+main.o: main.cpp shaders.h Transform.h variables.h types.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
 shaders.o: shaders.cpp shaders.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c shaders.cpp
-readfile.o: readfile.cpp readfile.h variables.h 
+readfile.o: readfile.cpp readfile.h variables.h types.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
-display.o: display.cpp variables.h
+display.o: display.cpp variables.h printError.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c display.cpp
-Transform.o: Transform.cpp Transform.h 
-	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp  
+Transform.o: Transform.cpp Transform.h types.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp
+printError.o: printError.cpp printError.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c printError.cpp
 grader.o: UCSD/grader.cpp UCSD/grader.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c UCSD/grader.cpp
-clean: 
-	$(RM) *.o transforms *.png
 
+unitTests.o: unitTests.cpp types.h variables.h types.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c unitTests.cpp
+TransformTests.o: TransformTests.cpp types.h Transform.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c TransformTests.cpp
+readfileTests.o: readfileTests.cpp types.h readfile.h Transform.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c readfileTests.cpp
 
- 
+debug.o: debug.cpp debug.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c debug.cpp
+
+clean:
+	$(RM) *.o transforms unitTests *.png
+
