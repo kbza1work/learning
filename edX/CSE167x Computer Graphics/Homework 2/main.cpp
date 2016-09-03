@@ -16,6 +16,7 @@
 #include "Transform.h"
 #include <FreeImage.h>
 #include "UCSD/grader.h"
+#include "printError.h"
 
 using namespace std;
 
@@ -167,16 +168,30 @@ void initShaders()
   fragmentshader = initshaders(GL_FRAGMENT_SHADER, "shaders/light.frag.glsl");
   shaderprogram = initprogram(vertexshader, fragmentshader);
   enablelighting = glGetUniformLocation(shaderprogram,"enablelighting");
+  printOpenGLError();
   lightpos = glGetUniformLocation(shaderprogram,"lightposn");
-  lightcol = glGetUniformLocation(shaderprogram,"lightcolor");
+  printOpenGLError();
+  lightcol = glGetUniformLocation(shaderprogram,"lightColor");
+  printOpenGLError();
   numusedcol = glGetUniformLocation(shaderprogram,"numused");
+  printOpenGLError();
   ambientcol = glGetUniformLocation(shaderprogram,"ambient");
+  printOpenGLError();
   diffusecol = glGetUniformLocation(shaderprogram,"diffuse");
+  printOpenGLError();
   specularcol = glGetUniformLocation(shaderprogram,"specular");
+  printOpenGLError();
   emissioncol = glGetUniformLocation(shaderprogram,"emission");
+  printOpenGLError();
   shininesscol = glGetUniformLocation(shaderprogram,"shininess");
+  printOpenGLError();
   modelViewProjectionMatrixcol =
     glGetUniformLocation(shaderprogram, "modelViewProjectionMatrix");
+  printOpenGLError();
+  modelViewMatrixcol = glGetUniformLocation(shaderprogram, "modelViewMatrix");
+  printOpenGLError();
+  normalMatrixcol = glGetUniformLocation(shaderprogram, "normalMatrix");
+  printOpenGLError();
 }
 
 int main(int argc, char* argv[])

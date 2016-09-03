@@ -69,6 +69,25 @@ void display() {
     printOpenGLError();
     glUniform1i(numusedcol, numused);
     printOpenGLError();
+
+// DEBUG
+/* std::cout << "transformed light positions = ["; */
+/* for(int i = 0; i < (4 * numused); i++) { */
+/*   std::cout << transformedLightPositions[i]; */
+/*   if(i < ((4 * numused) - 1)) { */
+/*     std::cout << ", "; */
+/*   } */
+/* } */
+/* std::cout << "]" << std::endl; */
+/* std::cout << "light colors = ["; */
+/* for(int i = 0; i < (4 * numused); i++) { */
+/*   std::cout << lightcolor[i]; */
+/*   if(i < ((4 * numused) - 1)) { */
+/*     std::cout << ", "; */
+/*   } */
+/* } */
+/* std::cout << "]" << std::endl; */
+/* std::cout << "number of active lights = " << numused << std::endl; */
   } else {
     glUniform1i(enablelighting,false);
     printOpenGLError();
@@ -105,15 +124,40 @@ void display() {
     printOpenGLError();
 
 // DEBUG
-std::cout << "eye (world coordinates) = " << glm::to_string(eye) << std::endl;
-std::cout << "up (world coordinates) = " << glm::to_string(up) << std::endl;
-DEBUG(obj->transform, "obj->transform");
-DEBUG(tr, "tr");
-DEBUG(viewMatrix, "view");
-DEBUG(modelViewMatrix, "modelview");
-DEBUG(projectionMatrix, "projection");
-DEBUG(mvp, "final MVP");
-std::cout << std::endl;
+/* std::cout << "eye (world coordinates) = " << glm::to_string(eye) << std::endl; */
+/* std::cout << "up (world coordinates) = " << glm::to_string(up) << std::endl; */
+/* DEBUG(obj->transform, "obj->transform"); */
+/* DEBUG(tr, "tr"); */
+/* DEBUG(viewMatrix, "view"); */
+/* DEBUG(modelViewMatrix, "modelview"); */
+/* DEBUG(projectionMatrix, "projection"); */
+/* DEBUG(mvp, "final MVP"); */
+/* std::cout << "diffuse = ["; */
+/* for(int i = 0; i < 4; i++) { */
+/*   std::cout << obj->diffuse[i]; */
+/*   if(i < 3) { */
+/*     std::cout << ", "; */
+/*   } */
+/* } */
+/* std::cout << "]" << std::endl; */
+/* std::cout << "specular = ["; */
+/* for(int i = 0; i < 4; i++) { */
+/*   std::cout << obj->specular[i]; */
+/*   if(i < 3) { */
+/*     std::cout << ", "; */
+/*   } */
+/* } */
+/* std::cout << "]" << std::endl; */
+/* std::cout << "emission = ["; */
+/* for(int i = 0; i < 4; i++) { */
+/*   std::cout << obj->emission[i]; */
+/*   if(i < 3) { */
+/*     std::cout << ", "; */
+/*   } */
+/* } */
+/* std::cout << "]" << std::endl; */
+/* std::cout << "shininess = " << obj->shininess << std::endl; */
+/* std::cout << std::endl; */
 
     // Actually draw the object
     // We provide the actual glut drawing functions for you.
