@@ -111,7 +111,7 @@ void display() {
     glUniform1f(shininesscol, obj->shininess);
     printOpenGLError();
 
-    const mat4 modelViewMatrix = viewMatrix * sc * tr * obj->transform;
+    const mat4 modelViewMatrix = viewMatrix * tr * sc * obj->transform;
     const mat4 normalMatrix = glm::transpose(glm::inverse(modelViewMatrix));
     const mat4 mvp = projectionMatrix * modelViewMatrix;
 
