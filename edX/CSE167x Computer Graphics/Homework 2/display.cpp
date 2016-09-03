@@ -24,25 +24,6 @@ using namespace std ;
 #include "variables.h"
 #include "readfile.h"
 
-// New helper transformation function to transform vector by modelview
-// May be better done using newer glm functionality.
-// Provided for your convenience.  Use is optional.
-// Some of you may want to use the more modern routines in readfile.cpp
-// that can also be used.
-void transformvec (const GLfloat input[4], GLfloat output[4])
-{
-  GLfloat modelview[16]; // in column major order
-  glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
-  printOpenGLError();
-
-  for (int i = 0 ; i < 4 ; i++) {
-    output[i] = 0;
-    for (int j = 0 ; j < 4 ; j++) {
-      output[i] += modelview[4*j+i] * input[j];
-    }
-  }
-}
-
 void display() {
   glClearColor(0, 0, 1, 0);
   printOpenGLError();
