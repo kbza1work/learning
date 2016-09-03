@@ -9,10 +9,10 @@ in vec3 normal;
 in vec4 vertex;
 
 const int numLights = 10;
-uniform bool enablelighting; // are we lighting at all (global).
-uniform vec4 lightposn[numLights]; // positions of lights
-uniform vec4 lightcolor[numLights]; // colors of lights
-uniform int numused;               // number of lights used
+uniform bool enablelighting;
+uniform vec4 lightposn[numLights];  // positions of lights
+uniform vec4 lightColor[numLights]; // colors of lights
+uniform int numused;                // number of lights used
 
 uniform mat4 modelViewMatrix;
 uniform mat4 normalMatrix;
@@ -28,18 +28,65 @@ uniform vec4 specular;
 uniform vec4 emission;
 uniform float shininess;
 
+// returns the color of the light produced on a surface with given properties
+// from a single light
+vec4 computeLight(
+  const in vec3 lightDirection,
+  const in vec4 lightColor,
+  const in vec3 normal,
+  const in vec3 halfVector,
+  const in vec4 diffuse,
+  const in vec4 specular,
+  const in float shininess
+) {
+  float nDotL = max(dot(normal, lightDirection), 0.0);
+  vec4 lambert = diffuse * nDotL;
+
+  float nDotH = max(dot(normal, halfVector), 0.0);
+  vec4 phong = specular * pow(nDotH, shininess);
+
+  return lightColor * (lambert + phong);
+}
+
 void main (void)
 {
-    if (enablelighting) {
-        vec4 finalcolor;
+    if(enablelighting) {
+      vec4 finalColor = ambient;
 
-        // YOUR CODE FOR HW 2 HERE
-        // A key part is implementation of the fragment shader
+      for(int thisLightIndex = 0; thisLightIndex < numused; thisLightIndex++) {
+        vec4 worldLightPositionH = lightposn[thisLightIndex];
 
-        // Color all pixels black for now, remove this in your implementation!
-        finalcolor = vec4(0,0,0,1);
+        bool isDirectionalLight = (abs(worldLightPositionH.w) < 0.00000001);
 
-        gl_FragColor = finalcolor;
+        const vec3 worldEyePositionIH = vec3(0, 0, 0);
+        vec4 worldVertexH = modelViewMatrix * vertex;
+        vec3 worldVertexIH = worldVertexH.xyz / worldVertexH.w;
+        vec3 eyeDirectionIH = normalize(worldEyePositionIH - worldVertexIH);
+        vec3 worldNormalIH = normalize((normalMatrix * vec4(normal, 0.0)).xyz);
+
+        vec3 lightDirectionIH;
+        if(isDirectionalLight) {
+          lightDirectionIH = worldLightPositionH.xyz;
+        } else {
+          vec3 worldLightPositionIH =
+            (worldLightPositionH/worldLightPositionH.w).xyz;
+          lightDirectionIH = normalize(worldLightPositionIH - worldVertexIH);
+        }
+
+        vec3 halfVector = normalize(lightDirectionIH + eyeDirectionIH);
+
+        finalColor += computeLight(
+          lightDirectionIH,
+          lightColor[thisLightIndex],
+          worldNormalIH,
+          halfVector,
+          diffuse,
+          specular,
+          shininess
+        );
+      }
+
+      gl_FragColor = finalColor;
     } else {
         gl_FragColor = color;
     }
