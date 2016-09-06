@@ -34,7 +34,7 @@ void reshape(int width, int height)
   w = width;
   h = height;
 
-  float aspect = w / (float) h, zNear = 0.1, zFar = 99.0;
+  float aspect = w / (float) h, zNear = 0.1, zFar = 500.0;
 
   // I am changing the projection stuff to be consistent with lookAt
   if (useGlu) {
