@@ -13,6 +13,7 @@
 #include <deque>
 #include <stack>
 #include <GL/glut.h>
+#include <GL/freeglut_ext.h>
 #include "Transform.h"
 #include "printError.h"
 
@@ -166,8 +167,12 @@ void display() {
       glutSolidCube(obj->size);
       printOpenGLError();
     } else if (obj->type == sphere) {
-      const int tessel = 20;
+      const GLint tessel = 20;
       glutSolidSphere(obj->size, tessel, tessel);
+      printOpenGLError();
+    } else if (obj->type == cylinder) {
+      const GLint tessel = 20;
+      glutSolidCylinder(obj->size, 1.0, tessel, tessel);
       printOpenGLError();
     } else if (obj->type == teapot) {
       glutSolidTeapot(obj->size);
