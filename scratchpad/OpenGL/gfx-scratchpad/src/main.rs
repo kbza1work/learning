@@ -17,6 +17,8 @@ extern crate gfx;
 extern crate gfx_window_glutin;
 extern crate glutin;
 
+use std::time::Instant;
+
 use gfx::traits::FactoryExt;
 use gfx::Device;
 
@@ -70,7 +72,13 @@ pub fn main() {
         out: main_color
     };
 
+    let frames_per_fps_report = 100;
+    let mut frames_drawn_since_last_report = 0;
+
     'main: loop {
+        let frame_start_time = Instant::now();
+        frames_drawn_since_last_report += 1;
+
         // loop over events
         for event in window.poll_events() {
             match event {
@@ -79,11 +87,24 @@ pub fn main() {
                 _ => {},
             }
         }
+
         // draw a frame
         encoder.clear(&data.out, CLEAR_COLOR);
         encoder.draw(&slice, &pso, &data);
         encoder.flush(&mut device);
         window.swap_buffers().unwrap();
         device.cleanup();
+
+        if frames_drawn_since_last_report == frames_per_fps_report {
+            let frame_render_time = frame_start_time.elapsed();
+            let frame_render_time_ns: u64 =
+                (frame_render_time.as_secs() * 1000000000u64) + (frame_render_time.subsec_nanos() as u64);
+            println!(
+                "frame render time: {} us ({} fps)",
+                (frame_render_time_ns as f64)/((frames_drawn_since_last_report * 1000) as f64),
+                (frames_drawn_since_last_report * 1000000000u64) as f64/(frame_render_time_ns as f64),
+            );
+            frames_drawn_since_last_report = 0;
+        }
     }
 }
