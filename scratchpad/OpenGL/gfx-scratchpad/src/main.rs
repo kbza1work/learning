@@ -47,7 +47,9 @@ pub fn main() {
     let builder = glutin::WindowBuilder::new()
         .with_dimensions(1400, 1000)
         .with_title("gfx scratchpad".to_string())
-        // Intel HD graphics support up to OpenGL 3.3/GLSL 330
+        // Intel HD graphics on my laptop supports up to OpenGL 3.3/GLSL 330
+        // Radeon R7 265 on my desktop supports up to OpenGL 4.1/GLSL 410 with open source drivers
+        // (the hardware should support OpenGL 4.3)
         .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (3, 2)))
         .with_gl_profile(glutin::GlProfile::Core)
         .with_depth_buffer(32)
