@@ -23,6 +23,8 @@ use gfx::Device;
 pub type ColorFormat = gfx::format::Srgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
 
+mod scene;
+
 gfx_defines!{
     vertex Vertex {
         pos: [f32; 2] = "a_Pos",
