@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq)]
 pub struct Model {
     pub width: f32,
     pub height: f32,
