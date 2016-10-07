@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>WebGL scratchpad</title>
+		<style>
+			body { margin: 0; }
+			#drawing-canvas { width: 100%; height: 100%; }
+		</style>
+		<script src="node_modules/gl-matrix/dist/gl-matrix.js"></script>
+		<script id="vertex-shader" type="x-shader/x-vertex">
+			attribute vec3 aVertexPosition;
+			attribute vec4 aVertexColor;
+
+			varying vec4 vertexColor;
+
+			uniform mat4 modelViewMatrix;
+			uniform mat4 perspectiveMatrix;
+
+			void main(void) {
+				gl_Position = perspectiveMatrix * modelViewMatrix * vec4(aVertexPosition, 1.0);
+				vertexColor = aVertexColor;
+			}
+		</script>
+		<script id="fragment-shader" type="x-shader/x-fragment">
+			precision mediump float;
+
+			varying vec4 vertexColor;
+
+			void main(void) {
+				gl_FragColor = vertexColor;
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="drawing-canvas"></canvas>
+		<script src="js/index.js"></script>
+	</body>
+</html>
