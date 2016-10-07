@@ -89,7 +89,7 @@ function initShaders(gl) {
 	return shaderProgram;
 }
 
-function initTriangleBuffers() {
+function initTriangleBuffers(gl) {
 	var triangleVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
 	var vertices = [
@@ -118,7 +118,7 @@ function initTriangleBuffers() {
 	};
 }
 
-function initSquareBuffers() {
+function initSquareBuffers(gl) {
 	var squareVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
 	vertices = [
@@ -149,25 +149,16 @@ function initSquareBuffers() {
 	};
 }
 
-function drawScene(
+function drawTriangle(
 	gl,
 	shaderProgram,
+	perspectiveMatrix,
 	triangleBuffers,
-	squareBuffers
+	rotation
 ) {
-	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-	var perspectiveMatrix = mat4.perspective(
-		mat4.create(),
-		glMatrix.toRadian(90),
-		gl.viewportWidth/gl.viewportHeight,
-		0.1,
-		100.0
-	);
-
 	var modelViewMatrix = mat4.identity(mat4.create());
-	mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -7.0]);
+	mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -5.0]);
+	mat4.rotateY(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation));
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleBuffers.position);
 	gl.vertexAttribPointer(
@@ -201,8 +192,18 @@ function drawScene(
 	);
 
 	gl.drawArrays(gl.TRIANGLES, 0, triangleBuffers.position.numItems);
+}
 
-	mat4.translate(modelViewMatrix, modelViewMatrix, [3.0, 0.0, 0.0]);
+function drawSquare(
+	gl,
+	shaderProgram,
+	perspectiveMatrix,
+	squareBuffers,
+	rotation
+) {
+	var modelViewMatrix = mat4.identity(mat4.create());
+	mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -5.0]);
+	mat4.rotateX(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation));
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, squareBuffers.position);
 	gl.vertexAttribPointer(
@@ -238,13 +239,57 @@ function drawScene(
 }
 
 
-var canvas = document.getElementById("drawing-canvas");
-resizeCanvas(canvas);
-var gl = initGL(canvas);
-var shaderProgram = initShaders(gl);
-var triangleBuffers = initTriangleBuffers();
-var squareBuffers = initSquareBuffers();
-gl.clearColor(0.1, 0.2, 0.3, 1.0);
-gl.enable(gl.DEPTH_TEST);
+function main() {
+	// the increment in the rotation applied to the drawn shapes per frame, in
+	// degrees
+	var triangle_rotation_step = 2.0;
+	var square_rotation_step = 2.0;
 
-drawScene(gl, shaderProgram, triangleBuffers, squareBuffers);
+	var canvas = document.getElementById("drawing-canvas");
+	resizeCanvas(canvas);
+	var gl = initGL(canvas);
+	var shaderProgram = initShaders(gl);
+	var triangleBuffers = initTriangleBuffers(gl);
+	var squareBuffers = initSquareBuffers(gl);
+	gl.clearColor(0.1, 0.2, 0.3, 1.0);
+	gl.enable(gl.DEPTH_TEST);
+
+	// the current rotation applied to each drawn shape, in degrees
+	var rotationTriangle = 0;
+	var rotationSquare = 0;
+
+	(function drawScene() {
+		window.requestAnimationFrame(drawScene);
+
+		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		var perspectiveMatrix = mat4.perspective(
+			mat4.create(),
+			glMatrix.toRadian(90),
+			gl.viewportWidth/gl.viewportHeight,
+			0.1,
+			100.0
+		);
+
+		drawTriangle(
+			gl,
+			shaderProgram,
+			perspectiveMatrix,
+			triangleBuffers,
+			rotationTriangle
+		);
+		drawSquare(
+			gl,
+			shaderProgram,
+			perspectiveMatrix,
+			squareBuffers,
+			rotationSquare
+		);
+
+		rotationTriangle += triangle_rotation_step;
+		rotationSquare += square_rotation_step;
+	})();
+}
+
+document.addEventListener('DOMContentLoaded', main);
