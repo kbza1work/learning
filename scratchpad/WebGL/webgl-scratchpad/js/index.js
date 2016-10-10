@@ -305,7 +305,7 @@ function main() {
 	function initTexture(textureUrl) {
 		var handleLoadedTexture = function(texture) {
 			gl.bindTexture(gl.TEXTURE_2D, texture);
-			// for gif
+			// for .gif
 			//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 			gl.texImage2D(
 				gl.TEXTURE_2D,
@@ -333,14 +333,17 @@ function main() {
 	function drawPyramid(
 		shaderProgram,
 		perspectiveMatrix,
-		pyramid,
-		rotation
+		pyramid
 	) {
 		gl.useProgram(shaderProgram);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -5.0]);
-		mat4.rotateY(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation));
+		mat4.rotateY(
+			modelViewMatrix,
+			modelViewMatrix,
+			glMatrix.toRadian(pyramid.rotation)
+		);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, pyramid.position);
 		gl.vertexAttribPointer(
@@ -379,16 +382,27 @@ function main() {
 	function drawCube(
 		shaderProgram,
 		perspectiveMatrix,
-		cube,
-		rotation
+		cube
 	) {
 		gl.useProgram(shaderProgram);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -5.0]);
-		mat4.rotateX(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[0]));
-		mat4.rotateY(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[1]));
-		mat4.rotateZ(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[2]));
+		mat4.rotateX(
+			modelViewMatrix,
+			modelViewMatrix,
+			glMatrix.toRadian(cube.rotation[0])
+		);
+		mat4.rotateY(
+			modelViewMatrix,
+			modelViewMatrix,
+			glMatrix.toRadian(cube.rotation[1])
+		);
+		mat4.rotateZ(
+			modelViewMatrix,
+			modelViewMatrix,
+			glMatrix.toRadian(cube.rotation[2])
+		);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, cube.position);
 		gl.vertexAttribPointer(
@@ -445,14 +459,22 @@ function main() {
 	var pyramid = initPyramid(colorShaders);
 	var cube = initCube(textureShaders, CUBE_TEXTURE_URL);
 
+	var perspectiveMatrix = mat4.perspective(
+		mat4.create(),
+		glMatrix.toRadian(90),
+		gl.viewportWidth/gl.viewportHeight,
+		0.1,
+		100.0
+	);
+
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.enable(gl.DEPTH_TEST);
 
-	// the current rotation applied to the pyramid, in degrees
-	var pyramidRotation = 0;
+	// the current rotation around the y-axis applied to the pyramid, in degrees
+	pyramid.rotation = 0;
 	// the cube's current rotation about the x-axis, y-axis, and z-axis
 	// respectively, in degrees
-	var cubeRotation = [0, 0, 0];
+	cube.rotation = [0, 0, 0];
 
 	var frames_drawn_since_last_report = 0;
 	var timer_start_time_ms = Date.now();
@@ -462,29 +484,19 @@ function main() {
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		var perspectiveMatrix = mat4.perspective(
-			mat4.create(),
-			glMatrix.toRadian(90),
-			gl.viewportWidth/gl.viewportHeight,
-			0.1,
-			100.0
-		);
-
 		drawPyramid(
 			colorShaders,
 			perspectiveMatrix,
-			pyramid,
-			pyramidRotation
+			pyramid
 		);
 		drawCube(
 			textureShaders,
 			perspectiveMatrix,
-			cube,
-			cubeRotation
+			cube
 		);
 
-		pyramidRotation = (pyramidRotation + PYRAMID_ROTATION_STEP) % 360;
-		cubeRotation = cubeRotation.map(function(degrees) {
+		pyramid.rotation = (pyramid.rotation + PYRAMID_ROTATION_STEP) % 360;
+		cube.rotation = cube.rotation.map(function(degrees) {
 			return (degrees + CUBE_ROTATION_STEP) % 360;
 		});
 
