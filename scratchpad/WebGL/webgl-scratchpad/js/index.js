@@ -1,6 +1,44 @@
 "use strict";
 
 function main() {
+
+	var FRAMES_PER_FPS_REPORT = 100;
+
+	var COLOR_SHADERS = [
+		"color-vertex-shader",
+		"color-fragment-shader",
+	];
+	var COLOR_SHADER_ATTRIBUTES = [
+		"aVertexPosition",
+		"aVertexColor",
+	];
+	var COLOR_SHADER_UNIFORMS = [
+		"modelViewMatrix",
+		"perspectiveMatrix",
+	];
+
+	var TEXTURE_SHADERS = [
+		"texture-vertex-shader",
+		"texture-fragment-shader",
+	];
+	var TEXTURE_SHADER_ATTRIBUTES = [
+		"aVertexPosition",
+		"aTextureCoord",
+	];
+	var TEXTURE_SHADER_UNIFORMS = [
+		"modelViewMatrix",
+		"perspectiveMatrix",
+		"uSampler",
+	];
+
+	// the increment in the rotation applied to the drawn shapes per frame, in
+	// degrees
+	var PYRAMID_ROTATION_STEP = 2.5;
+	var CUBE_ROTATION_STEP = -1;
+	var CUBE_ORBIT_STEP = 0.02;
+
+	var CUBE_TEXTURE_URL = "textures/grass.jpg";
+
 	var gl;
 
 	// return a new WebGL context for the given canvas element, or throw an
@@ -25,74 +63,70 @@ function main() {
 		}
 	}
 
-	function getShader(id) {
-		var shaderScript = document.getElementById(id);
-		if (!shaderScript) {
-			return null;
-		}
-
-		var str = "";
-		var k = shaderScript.firstChild;
-		while (k) {
-			if (k.nodeType == 3) {
-				str += k.textContent;
-			}
-			k = k.nextSibling;
-		}
-
-		var shader;
-		if (shaderScript.type == "x-shader/x-fragment") {
-			shader = gl.createShader(gl.FRAGMENT_SHADER);
-		} else if (shaderScript.type == "x-shader/x-vertex") {
-			shader = gl.createShader(gl.VERTEX_SHADER);
-		} else {
-			throw new Error("Unrecognized shader MIME type: " + shaderScript.type);
-		}
-
-		gl.shaderSource(shader, str);
-		gl.compileShader(shader);
-
-		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			throw new Error(gl.getShaderInfoLog(shader));
-		}
-
-		return shader;
-	}
-
-
-	function initShaders() {
+	function initShaders(shaderIDs, attributeNames, uniformNames) {
 		var shaderProgram;
 
-		var fragmentShader = getShader("vertex-shader");
-		var vertexShader = getShader("fragment-shader");
+		var getShader = function(id) {
+			var shaderScript = document.getElementById(id);
+			if (!shaderScript) {
+				return null;
+			}
+
+			var str = "";
+			var k = shaderScript.firstChild;
+			while (k) {
+				if (k.nodeType == 3) {
+					str += k.textContent;
+				}
+				k = k.nextSibling;
+			}
+
+			var shader;
+			if (shaderScript.type == "x-shader/x-fragment") {
+				shader = gl.createShader(gl.FRAGMENT_SHADER);
+			} else if (shaderScript.type == "x-shader/x-vertex") {
+				shader = gl.createShader(gl.VERTEX_SHADER);
+			} else {
+				throw new Error("Unrecognized shader MIME type: " + shaderScript.type);
+			}
+
+			gl.shaderSource(shader, str);
+			gl.compileShader(shader);
+
+			if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+				throw new Error(gl.getShaderInfoLog(shader));
+			}
+
+			return shader;
+		};
 
 		shaderProgram = gl.createProgram();
-		gl.attachShader(shaderProgram, vertexShader);
-		gl.attachShader(shaderProgram, fragmentShader);
+		shaderIDs.forEach(function(shaderID) {
+			gl.attachShader(shaderProgram, getShader(shaderID));
+		});
 		gl.linkProgram(shaderProgram);
 
-		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+		if(!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
 			throw new Error("Couldn't link shader program");
 		}
 
 		gl.useProgram(shaderProgram);
 
-		shaderProgram.vertexPositionAttribute =
-			gl.getAttribLocation(shaderProgram, "aVertexPosition");
-		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-		shaderProgram.vertexColorAttribute =
-			gl.getAttribLocation(shaderProgram, "aVertexColor");
-		gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+		attributeNames.forEach(function(shaderVarName) {
+			shaderProgram[shaderVarName] =
+				gl.getAttribLocation(shaderProgram, shaderVarName);
+			gl.enableVertexAttribArray(shaderProgram[shaderVarName]);
+		});
 
-		shaderProgram.perspectiveMatrix =
-			gl.getUniformLocation(shaderProgram, "perspectiveMatrix");
-		shaderProgram.modelViewMatrix =
-			gl.getUniformLocation(shaderProgram, "modelViewMatrix");
+		uniformNames.forEach(function(shaderVarName) {
+			shaderProgram[shaderVarName] =
+				gl.getUniformLocation(shaderProgram, shaderVarName);
+		});
 
 		return shaderProgram;
 	}
 
-	function initPyramid() {
+	function initPyramid(shaderProgram) {
 		var vertexPositionBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
 		var vertices = [
@@ -153,7 +187,9 @@ function main() {
 		};
 	}
 
-	function initCube() {
+	function initCube(shaderProgram, textureUrl) {
+		var cubeTexture = initTexture(textureUrl);
+
 		var vertexPositionBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
 		var vertices = [
@@ -197,26 +233,48 @@ function main() {
 		vertexPositionBuffer.itemSize = 3;
 		vertexPositionBuffer.numItems = 24;
 
-		var vertexColorBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-		var colors = [
-			[1.0, 0.0, 0.0, 1.0], // Front face
-			[1.0, 1.0, 0.0, 1.0], // Back face
-			[0.0, 1.0, 0.0, 1.0], // Top face
-			[1.0, 0.5, 0.5, 1.0], // Bottom face
-			[1.0, 0.0, 1.0, 1.0], // Right face
-			[0.0, 0.0, 1.0, 1.0]  // Left face
+		var vertexTextureCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexTextureCoordBuffer);
+		var textureCoords = [
+		  // Front face
+		  0.0, 0.0,
+		  1.0, 0.0,
+		  1.0, 1.0,
+		  0.0, 1.0,
+
+		  // Back face
+		  1.0, 0.0,
+		  1.0, 1.0,
+		  0.0, 1.0,
+		  0.0, 0.0,
+
+		  // Top face
+		  0.0, 1.0,
+		  0.0, 0.0,
+		  1.0, 0.0,
+		  1.0, 1.0,
+
+		  // Bottom face
+		  1.0, 1.0,
+		  0.0, 1.0,
+		  0.0, 0.0,
+		  1.0, 0.0,
+
+		  // Right face
+		  1.0, 0.0,
+		  1.0, 1.0,
+		  0.0, 1.0,
+		  0.0, 0.0,
+
+		  // Left face
+		  0.0, 0.0,
+		  1.0, 0.0,
+		  1.0, 1.0,
+		  0.0, 1.0,
 		];
-		var unpackedColors = [];
-		for (var i in colors) {
-			var color = colors[i];
-			for (var j=0; j < 4; j++) {
-				unpackedColors = unpackedColors.concat(color);
-			}
-		}
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(unpackedColors), gl.STATIC_DRAW);
-		vertexColorBuffer.itemSize = 4;
-		vertexColorBuffer.numItems = 24;
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+		vertexTextureCoordBuffer.itemSize = 2;
+		vertexTextureCoordBuffer.numItems = 24;
 
 		var indexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -239,8 +297,37 @@ function main() {
 		return {
 			position: vertexPositionBuffer,
 			index: indexBuffer,
-			color: vertexColorBuffer,
+			texture: cubeTexture,
+			textureCoords: vertexTextureCoordBuffer,
 		};
+	}
+
+	function initTexture(textureUrl) {
+		var handleLoadedTexture = function(texture) {
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			// for gif
+			//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			gl.texImage2D(
+				gl.TEXTURE_2D,
+				0,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
+				texture.image
+			);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+			gl.bindTexture(gl.TEXTURE_2D, null);
+		};
+
+		var texture = gl.createTexture();
+		texture.image = new Image();
+		texture.image.onload = function() {
+			handleLoadedTexture(texture);
+		}
+		texture.image.src = textureUrl;
+
+		return texture;
 	}
 
 	function drawPyramid(
@@ -249,13 +336,15 @@ function main() {
 		pyramid,
 		rotation
 	) {
+		gl.useProgram(shaderProgram);
+
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -5.0]);
 		mat4.rotateY(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation));
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, pyramid.position);
 		gl.vertexAttribPointer(
-			shaderProgram.vertexPositionAttribute,
+			shaderProgram.aVertexPositioin,
 			pyramid.position.itemSize,
 			gl.FLOAT,
 			false,
@@ -265,7 +354,7 @@ function main() {
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, pyramid.color);
 		gl.vertexAttribPointer(
-			shaderProgram.vertexColorAttribute,
+			shaderProgram.aVertexColor,
 			pyramid.color.itemSize,
 			gl.FLOAT,
 			false,
@@ -293,13 +382,17 @@ function main() {
 		cube,
 		rotation
 	) {
+		gl.useProgram(shaderProgram);
+
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -5.0]);
-		mat4.rotate(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation), [1, 1, 1]);
+		mat4.rotateX(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[0]));
+		mat4.rotateY(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[1]));
+		mat4.rotateZ(modelViewMatrix, modelViewMatrix, glMatrix.toRadian(rotation[2]));
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, cube.position);
 		gl.vertexAttribPointer(
-			shaderProgram.vertexPositionAttribute,
+			shaderProgram.aVertexPosition,
 			cube.position.itemSize,
 			gl.FLOAT,
 			false,
@@ -307,15 +400,19 @@ function main() {
 			0
 		);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, cube.color);
+		gl.bindBuffer(gl.ARRAY_BUFFER, cube.textureCoords);
 		gl.vertexAttribPointer(
-			shaderProgram.vertexColorAttribute,
-			cube.color.itemSize,
+			shaderProgram.aTextureCoord,
+			cube.textureCoords.itemSize,
 			gl.FLOAT,
 			false,
 			0,
 			0
 		);
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, cube.texture);
+		gl.uniform1i(shaderProgram.uSampler, 0);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.index);
 
@@ -332,25 +429,33 @@ function main() {
 		gl.drawElements(gl.TRIANGLES, cube.index.numItems, gl.UNSIGNED_SHORT, 0);
 	}
 
-	// the increment in the rotation applied to the drawn shapes per frame, in
-	// degrees
-	var PYRAMID_ROTATION_STEP = 2.5;
-	var CUBE_ROTATION_STEP = -1;
-
 	var canvas = document.getElementById("drawing-canvas");
 	resizeCanvas(canvas);
 	initGL(canvas);
-	var shaderProgram = initShaders();
-	var pyramid = initPyramid();
-	var cube = initCube();
+	var colorShaders = initShaders(
+		COLOR_SHADERS,
+		COLOR_SHADER_ATTRIBUTES,
+		COLOR_SHADER_UNIFORMS
+	);
+	var textureShaders = initShaders(
+		TEXTURE_SHADERS,
+		TEXTURE_SHADER_ATTRIBUTES,
+		TEXTURE_SHADER_UNIFORMS
+	);
+	var pyramid = initPyramid(colorShaders);
+	var cube = initCube(textureShaders, CUBE_TEXTURE_URL);
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.enable(gl.DEPTH_TEST);
 
-	// the current rotation applied to each drawn shape, in degrees
-	var rotationPyramid = 0;
-	var rotationCube = 90;
+	// the current rotation applied to the pyramid, in degrees
+	var pyramidRotation = 0;
+	// the cube's current rotation about the x-axis, y-axis, and z-axis
+	// respectively, in degrees
+	var cubeRotation = [0, 0, 0];
 
+	var frames_drawn_since_last_report = 0;
+	var timer_start_time_ms = Date.now();
 	(function drawScene() {
 		window.requestAnimationFrame(drawScene);
 
@@ -366,20 +471,34 @@ function main() {
 		);
 
 		drawPyramid(
-			shaderProgram,
+			colorShaders,
 			perspectiveMatrix,
 			pyramid,
-			rotationPyramid
+			pyramidRotation
 		);
 		drawCube(
-			shaderProgram,
+			textureShaders,
 			perspectiveMatrix,
 			cube,
-			rotationCube
+			cubeRotation
 		);
 
-		rotationPyramid = (rotationPyramid + PYRAMID_ROTATION_STEP) % 360;
-		rotationCube = (rotationCube + CUBE_ROTATION_STEP) % 360;
+		pyramidRotation = (pyramidRotation + PYRAMID_ROTATION_STEP) % 360;
+		cubeRotation = cubeRotation.map(function(degrees) {
+			return (degrees + CUBE_ROTATION_STEP) % 360;
+		});
+
+		// fps counter disabled to avoid spamming the console
+		// frames_drawn_since_last_report += 1;
+		// if(frames_drawn_since_last_report == FRAMES_PER_FPS_REPORT) {
+		// 	var now = Date.now();
+		// 	var elapsed_ms = now - timer_start_time_ms;
+		// 	var avg_render_time_ms = elapsed_ms/FRAMES_PER_FPS_REPORT;
+		// 	var fps = 1000.0/avg_render_time_ms;
+		// 	console.log("avg render time: " + avg_render_time_ms + " ms (last " + FRAMES_PER_FPS_REPORT + " frames), " + fps + " fps");
+		// 	frames_drawn_since_last_report = 0;
+		// 	timer_start_time_ms = now;
+		// }
 	})();
 }
 
