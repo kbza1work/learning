@@ -29,16 +29,17 @@ function main() {
 		"modelViewMatrix",
 		"perspectiveMatrix",
 		"uSampler",
+		"uAlpha",
 	];
+
+	var FOVY = 45;
 
 	// the increment in the rotation applied to the drawn shapes per frame, in
 	// degrees
-	var SCENE_ROTATION_STEP = 1;
-	var PYRAMID_ROTATION_STEP = 2.5;
-	var CUBE_ROTATION_STEP = -1;
-	var CUBE_ORBIT_STEP = 0.02;
+	var INITIAL_SCENE_TRANSLATION = { x: 0, y: 0, z: 0 };
+	var SCENE_TRANSLATION_STEP = 1;
 
-	var CUBE_TEXTURE_URL = "textures/crate.gif";
+	var CUBE_TEXTURE_URL = "textures/glass.gif";
 
 	var gl;
 
@@ -157,26 +158,27 @@ function main() {
 
 		var vertexColorBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+		var alpha = 0.8;
 		var colors = [
 			// front face
-			1.0, 0.0, 0.0, 1.0,
-			0.0, 1.0, 0.0, 1.0,
-			0.0, 0.0, 1.0, 1.0,
+			1.0, 0.0, 0.0, alpha,
+			0.0, 1.0, 0.0, alpha,
+			0.0, 0.0, 1.0, alpha,
 
 			// right face
-			1.0, 0.0, 0.0, 1.0,
-			0.0, 0.0, 1.0, 1.0,
-			0.0, 1.0, 0.0, 1.0,
+			1.0, 0.0, 0.0, alpha,
+			0.0, 0.0, 1.0, alpha,
+			0.0, 1.0, 0.0, alpha,
 
 			// back face
-			1.0, 0.0, 0.0, 1.0,
-			0.0, 1.0, 0.0, 1.0,
-			0.0, 0.0, 1.0, 1.0,
+			1.0, 0.0, 0.0, alpha,
+			0.0, 1.0, 0.0, alpha,
+			0.0, 0.0, 1.0, alpha,
 
 			// left face
-			1.0, 0.0, 0.0, 1.0,
-			0.0, 0.0, 1.0, 1.0,
-			0.0, 1.0, 0.0, 1.0,
+			1.0, 0.0, 0.0, alpha,
+			0.0, 0.0, 1.0, alpha,
+			0.0, 1.0, 0.0, alpha,
 		];
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 		vertexColorBuffer.itemSize = 4;
@@ -184,7 +186,10 @@ function main() {
 
 		return {
 			position: vertexPositionBuffer,
-			color: vertexColorBuffer
+			color: vertexColorBuffer,
+			rotation: function(t) {
+				return glMatrix.toRadian(t);
+			}
 		};
 	}
 
@@ -300,6 +305,13 @@ function main() {
 			index: indexBuffer,
 			texture: cubeTexture,
 			textureCoords: vertexTextureCoordBuffer,
+			rotation: function(t) {
+				var angle = glMatrix.toRadian(t);
+				return { x: 5 * angle, y: 10 * angle, z: 2 * angle };
+			},
+			alpha: function(t) {
+				return 0.4 + (0.2 * Math.sin(0.01 * t));
+			}
 		};
 	}
 
@@ -341,26 +353,27 @@ function main() {
 		shaderProgram,
 		perspectiveMatrix,
 		pyramid,
-		sceneRotation
+		t,
+		sceneTranslation
 	) {
 		gl.useProgram(shaderProgram);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
-		mat4.rotateY(
+		mat4.translate(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(sceneRotation)
+			[sceneTranslation.x, 0, sceneTranslation.z]
 		);
 		mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -5.0]);
 		mat4.rotateY(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(pyramid.rotation)
+			pyramid.rotation(t)
 		);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, pyramid.position);
 		gl.vertexAttribPointer(
-			shaderProgram.aVertexPositioin,
+			shaderProgram.aVertexPosition,
 			pyramid.position.itemSize,
 			gl.FLOAT,
 			false,
@@ -396,31 +409,33 @@ function main() {
 		shaderProgram,
 		perspectiveMatrix,
 		cube,
-		sceneRotation
+		t,
+		sceneTranslation
 	) {
 		gl.useProgram(shaderProgram);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
-		mat4.rotateY(
+		mat4.translate(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(sceneRotation)
+			[sceneTranslation.x, 0, sceneTranslation.z]
 		);
-		mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -5.0]);
+		mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -6.0]);
+		var currentRotation = cube.rotation(t);
 		mat4.rotateX(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(cube.rotation[0])
+			glMatrix.toRadian(currentRotation.x)
 		);
 		mat4.rotateY(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(cube.rotation[1])
+			glMatrix.toRadian(currentRotation.y)
 		);
 		mat4.rotateZ(
 			modelViewMatrix,
 			modelViewMatrix,
-			glMatrix.toRadian(cube.rotation[2])
+			glMatrix.toRadian(currentRotation.z)
 		);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, cube.position);
@@ -446,6 +461,7 @@ function main() {
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, cube.texture);
 		gl.uniform1i(shaderProgram.uSampler, 0);
+		gl.uniform1f(shaderProgram.uAlpha, cube.alpha(t));
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.index);
 
@@ -478,38 +494,44 @@ function main() {
 	var pyramid = initPyramid(colorShaders);
 	var cube = initCube(textureShaders, CUBE_TEXTURE_URL);
 
-	var sceneRotation = 0;
+	var sceneTranslation = INITIAL_SCENE_TRANSLATION;
 	var perspectiveMatrix = mat4.perspective(
 		mat4.create(),
-		glMatrix.toRadian(45),
+		glMatrix.toRadian(FOVY),
 		gl.viewportWidth/gl.viewportHeight,
 		0.1,
 		100.0
 	);
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
-	gl.enable(gl.DEPTH_TEST);
-
-	// the current rotation around the y-axis applied to the pyramid, in degrees
-	pyramid.rotation = 0;
-	// the cube's current rotation about the x-axis, y-axis, and z-axis
-	// respectively, in degrees
-	cube.rotation = [0, 0, 0];
+	gl.disable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
 	document.onkeydown = function(event) {
 		var key = event.keyCode;
 
 		switch(key) {
-			case 37: // left arrow
-				sceneRotation += SCENE_ROTATION_STEP;
+			case 27: // escape key
+				sceneTranslation = INITIAL_SCENE_TRANSLATION;
 				break;
-			case 39: // right arrow
-				sceneRotation -= SCENE_ROTATION_STEP;
+			case 65: // a
+				sceneTranslation.x += SCENE_TRANSLATION_STEP;
+				break;
+			case 68: // d
+				sceneTranslation.x -= SCENE_TRANSLATION_STEP;
+				break;
+			case 83: // s
+				sceneTranslation.z -= SCENE_TRANSLATION_STEP;
+				break;
+			case 87: // w
+				sceneTranslation.z += SCENE_TRANSLATION_STEP;
 				break;
 		};
 	};
 
-	var frames_drawn_since_last_report = 0;
+	var t = 0;
+	var t_last_report = 0;
 	var timer_start_time_ms = Date.now();
 	(function drawScene() {
 		window.requestAnimationFrame(drawScene);
@@ -521,29 +543,27 @@ function main() {
 			colorShaders,
 			perspectiveMatrix,
 			pyramid,
-			sceneRotation
+			t,
+			sceneTranslation
 		);
 		drawCube(
 			textureShaders,
 			perspectiveMatrix,
 			cube,
-			sceneRotation
+			t,
+			sceneTranslation
 		);
 
-		pyramid.rotation = (pyramid.rotation + PYRAMID_ROTATION_STEP) % 360;
-		cube.rotation = cube.rotation.map(function(degrees) {
-			return (degrees + CUBE_ROTATION_STEP) % 360;
-		});
+		t++;
 
 		// fps counter disabled to avoid spamming the console
-		// frames_drawn_since_last_report += 1;
-		// if(frames_drawn_since_last_report == FRAMES_PER_FPS_REPORT) {
+		// if((t - t_last_report) == FRAMES_PER_FPS_REPORT) {
 		// 	var now = Date.now();
 		// 	var elapsed_ms = now - timer_start_time_ms;
 		// 	var avg_render_time_ms = elapsed_ms/FRAMES_PER_FPS_REPORT;
 		// 	var fps = 1000.0/avg_render_time_ms;
 		// 	console.log("avg render time: " + avg_render_time_ms + " ms (last " + FRAMES_PER_FPS_REPORT + " frames), " + fps + " fps");
-		// 	frames_drawn_since_last_report = 0;
+		// 	t_last_report = t;
 		// 	timer_start_time_ms = now;
 		// }
 	})();
