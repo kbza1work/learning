@@ -357,6 +357,8 @@ function main() {
 		sceneTranslation
 	) {
 		gl.useProgram(shaderProgram);
+		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.BLEND);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(
@@ -413,6 +415,9 @@ function main() {
 		sceneTranslation
 	) {
 		gl.useProgram(shaderProgram);
+		gl.disable(gl.DEPTH_TEST);
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
 		var modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(
@@ -504,9 +509,8 @@ function main() {
 	);
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
-	gl.disable(gl.DEPTH_TEST);
-	gl.enable(gl.BLEND);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.enable(gl.DEPTH_TEST);
+	gl.disable(gl.BLEND);
 
 	document.onkeydown = function(event) {
 		var key = event.keyCode;
