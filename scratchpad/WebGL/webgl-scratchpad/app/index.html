@@ -7,7 +7,6 @@
 			body { margin: 0; }
 			#drawing-canvas { width: 100%; height: 100%; }
 		</style>
-		<script src="node_modules/gl-matrix/dist/gl-matrix.js"></script>
 		<script id="color-vertex-shader" type="x-shader/x-vertex">
 			attribute vec3 aVertexPosition;
 			attribute vec4 aVertexColor;
@@ -60,7 +59,7 @@
 				gl_FragColor = vec4(textureColor.rgb, textureColor.a * uAlpha);
 			}
 		</script>
-		<script src="js/index.js"></script>
+		<script src="bundle.js"></script>
 	</head>
 	<body>
 		<canvas id="drawing-canvas"></canvas>
