@@ -198,7 +198,7 @@ export default function Cube(gl) {
 			0
 		);
 
-		gl.activeTexture(gl.TEXTURE0);
+		gl.activeTexture(this.gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 		gl.uniform1i(this.shaders.uSampler, 0);
 		gl.uniform1f(this.shaders.uAlpha, this.alpha(t));
@@ -215,6 +215,7 @@ export default function Cube(gl) {
 			false,
 			modelViewMatrix
 		);
+
 		gl.drawElements(gl.TRIANGLES, this.index.numItems, gl.UNSIGNED_SHORT, 0);
 	};
 }
