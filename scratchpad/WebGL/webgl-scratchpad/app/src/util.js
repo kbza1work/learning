@@ -2,7 +2,7 @@ export default {
 	// return a new WebGL context for the given canvas element, or throw an
 	// exception if something went wrong
 	initGL: function(canvas) {
-		const gl = canvas.getContext("experimental-webgl");
+		const gl = canvas.getContext("webgl2");
 		gl.viewportWidth = canvas.width;
 		gl.viewportHeight = canvas.height;
 		if(gl === null) {

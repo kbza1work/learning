@@ -23,6 +23,9 @@ const STARBURST_SHADER_UNIFORMS = [
 export default function Starburst(gl, numSprites) {
 	this.gl = gl,
 
+	this.vao = gl.createVertexArray();
+	gl.bindVertexArray(this.vao);
+
 	this.shaders = Util.initShaders(
 		gl,
 		STARBURST_SHADERS,
@@ -43,6 +46,14 @@ export default function Starburst(gl, numSprites) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	this.position.itemSize = 3;
 	this.position.numItems = 4;
+	this.gl.vertexAttribPointer(
+		this.shaders.aVertexPosition,
+		this.position.itemSize,
+		gl.FLOAT,
+		false,
+		0,
+		0
+	);
 
 	this.textureCoords = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoords);
@@ -55,6 +66,14 @@ export default function Starburst(gl, numSprites) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
 	this.textureCoords.itemSize = 2;
 	this.textureCoords.numItems = 4;
+	this.gl.vertexAttribPointer(
+		this.shaders.aTextureCoord,
+		this.textureCoords.itemSize,
+		gl.FLOAT,
+		false,
+		0,
+		0
+	);
 
 	this.sprites = [];
 	for(let i = 0; i < numSprites; i++) {
@@ -69,6 +88,8 @@ export default function Starburst(gl, numSprites) {
 		);
 	}
 
+	gl.bindVertexArray(null);
+
 	this.draw = function(
 		perspectiveMatrix,
 		t,
@@ -78,6 +99,7 @@ export default function Starburst(gl, numSprites) {
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+		gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(
@@ -86,26 +108,6 @@ export default function Starburst(gl, numSprites) {
 			[sceneTranslation.x, 0, sceneTranslation.z]
 		);
 		mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -25.0]);
-
-		this.gl.bindBuffer(gl.ARRAY_BUFFER, this.position);
-		this.gl.vertexAttribPointer(
-			this.shaders.aVertexPosition,
-			this.position.itemSize,
-			gl.FLOAT,
-			false,
-			0,
-			0
-		);
-
-		this.gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoords);
-		this.gl.vertexAttribPointer(
-			this.shaders.aTextureCoord,
-			this.textureCoords.itemSize,
-			gl.FLOAT,
-			false,
-			0,
-			0
-		);
 
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -120,6 +122,8 @@ export default function Starburst(gl, numSprites) {
 		this.sprites.forEach((sprite) => {
 			sprite.draw(t, modelViewMatrix);
 		});
+
+		gl.bindVertexArray(null);
 	};
 }
 

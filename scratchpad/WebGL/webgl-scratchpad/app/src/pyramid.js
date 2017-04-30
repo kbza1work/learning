@@ -18,6 +18,9 @@ const COLOR_SHADER_UNIFORMS = [
 export default function Pyramid(gl) {
 	this.gl = gl,
 
+	this.vao = gl.createVertexArray();
+	gl.bindVertexArray(this.vao);
+
 	this.shaders = Util.initShaders(
 		gl,
 		COLOR_SHADERS,
@@ -51,6 +54,14 @@ export default function Pyramid(gl) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	this.position.itemSize = 3;
 	this.position.numItems = 12;
+	gl.vertexAttribPointer(
+		this.shaders.aVertexPosition,
+		this.position.itemSize,
+		gl.FLOAT,
+		false,
+		0,
+		0
+	);
 
 	this.color = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.color);
@@ -79,6 +90,16 @@ export default function Pyramid(gl) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 	this.color.itemSize = 4;
 	this.color.numItems = 12;
+	gl.vertexAttribPointer(
+		this.shaders.aVertexColor,
+		this.color.itemSize,
+		gl.FLOAT,
+		false,
+		0,
+		0
+	);
+
+	gl.bindVertexArray(null);
 
 	this.rotation = function(t) {
 		return glMatrix.toRadian(t);
@@ -92,6 +113,7 @@ export default function Pyramid(gl) {
 		gl.useProgram(this.shaders);
 		gl.enable(gl.DEPTH_TEST);
 		gl.disable(gl.BLEND);
+		gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(
@@ -106,26 +128,6 @@ export default function Pyramid(gl) {
 			this.rotation(t)
 		);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.position);
-		gl.vertexAttribPointer(
-			this.shaders.aVertexPosition,
-			this.position.itemSize,
-			gl.FLOAT,
-			false,
-			0,
-			0
-		);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.color);
-		gl.vertexAttribPointer(
-			this.shaders.aVertexColor,
-			this.color.itemSize,
-			gl.FLOAT,
-			false,
-			0,
-			0
-		);
-
 		gl.uniformMatrix4fv(
 			this.shaders.perspectiveMatrix,
 			false,
@@ -138,6 +140,8 @@ export default function Pyramid(gl) {
 		);
 
 		gl.drawArrays(gl.TRIANGLES, 0, this.position.numItems);
+
+		gl.bindVertexArray(null);
 	};
 }
 
