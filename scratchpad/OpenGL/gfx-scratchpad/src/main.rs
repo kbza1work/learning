@@ -2,13 +2,16 @@
 
 #[macro_use]
 extern crate error_chain;
-mod errors;
 
 extern crate cgmath;
 #[macro_use]
 extern crate gfx;
 extern crate gfx_window_glutin;
 extern crate glutin;
+
+mod errors {
+    error_chain!{}
+}
 
 use errors::*;
 
