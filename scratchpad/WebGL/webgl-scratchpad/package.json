@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "\"$(npm bin)\"/webpack --progress --colors",
-    "serve": "NODE_ENV=development \"$(npm bin)\"/webpack-dev-server --inline --hot --display-error-details",
+    "serve": "NODE_ENV=development \"$(npm bin)\"/webpack-dev-server --hot --display-error-details --open",
     "test": "\"$(npm bin)\"/karma start karma.conf.js"
   },
   "engines": {

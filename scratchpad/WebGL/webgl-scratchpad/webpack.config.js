@@ -25,5 +25,11 @@ module.exports = {
 			    //sourceMaps: "inline"
             }
         ]
-    }
+    },
+	devServer: {
+		publicPath: "/",
+		contentBase: "./app",
+		inline: true,
+		overlay: true
+	}
 };
