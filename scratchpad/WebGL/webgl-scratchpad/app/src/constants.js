@@ -4,5 +4,11 @@ export default {
 	FOVY: 45,
 	INITIAL_SCENE_TRANSLATION: { x: 0, y: 0, z: 0 },
 	SCENE_TRANSLATION_STEP: 1,
+
+	ENABLE_PYRAMID: true,
+
+	ENABLE_CUBE: true,
+
+	ENABLE_STARBURST: true,
 	NUM_STARBURST_SPRITES: 50,
 };

@@ -21,9 +21,9 @@ function main() {
 	const gl = Util.initGL(canvas);
 	console.log(`Acquired WebGL context.`);
 
-	const pyramid = new Pyramid(gl);
-	const cube = new Cube(gl);
-	const starburst = new Starburst(gl, Settings.NUM_STARBURST_SPRITES);
+	const pyramid = Settings.ENABLE_PYRAMID ? new Pyramid(gl) : null;
+	const cube = Settings.ENABLE_CUBE ? new Cube(gl) : null;
+	const starburst = Settings.ENABLE_STARBURST ? new Starburst(gl, Settings.NUM_STARBURST_SPRITES) : null;
 
 	let sceneTranslation = Settings.INITIAL_SCENE_TRANSLATION;
 	const perspectiveMatrix = mat4.perspective(
@@ -71,21 +71,29 @@ function main() {
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		starburst.draw(
-			perspectiveMatrix,
-			t,
-			sceneTranslation
-		);
-		pyramid.draw(
-			perspectiveMatrix,
-			t,
-			sceneTranslation
-		);
-		cube.draw(
-			perspectiveMatrix,
-			t,
-			sceneTranslation
-		);
+		if(Settings.ENABLE_STARBURST) {
+			starburst.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation
+			);
+		}
+
+		if(Settings.ENABLE_PYRAMID) {
+			pyramid.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation
+			);
+		}
+
+		if(Settings.ENABLE_CUBE) {
+			cube.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation
+			);
+		}
 
 		t++;
 
