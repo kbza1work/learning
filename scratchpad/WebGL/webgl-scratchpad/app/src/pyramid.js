@@ -2,18 +2,27 @@ import {glMatrix, mat4} from 'gl-matrix';
 
 import Util from './util';
 
-const COLOR_SHADERS = [
-	"color-vertex-shader",
-	"color-fragment-shader",
-];
-const COLOR_SHADER_ATTRIBUTES = [
-	"aVertexPosition",
-	"aVertexColor",
-];
-const COLOR_SHADER_UNIFORMS = [
-	"modelViewMatrix",
-	"perspectiveMatrix",
-];
+const initShaders = (gl) => {
+	const shaderSrcFiles = [
+		"color_v.glsl",
+		"color_f.glsl",
+	];
+	const attributes = [
+		"aVertexPosition",
+		"aVertexColor",
+	];
+	const uniforms = [
+		"modelViewMatrix",
+		"perspectiveMatrix",
+	];
+
+	return Util.initShaders(
+		gl,
+		shaderSrcFiles,
+		attributes,
+		uniforms
+	);
+};
 
 export default function Pyramid(gl) {
 	this.gl = gl,
@@ -21,12 +30,7 @@ export default function Pyramid(gl) {
 	this.vao = gl.createVertexArray();
 	gl.bindVertexArray(this.vao);
 
-	this.shaders = Util.initShaders(
-		gl,
-		COLOR_SHADERS,
-		COLOR_SHADER_ATTRIBUTES,
-		COLOR_SHADER_UNIFORMS
-	);
+	this.shaders = initShaders(this.gl);
 
 	this.position = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.position);

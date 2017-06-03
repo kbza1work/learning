@@ -22,44 +22,37 @@ export default {
 		}
 	},
 
-	initShaders: function(gl, shaderIDs, attributeNames, uniformNames) {
-		const getShader = function(id) {
-			const shaderScript = document.getElementById(id);
-			if (!shaderScript) {
-				return null;
-			}
-
-			let str = "";
-			let k = shaderScript.firstChild;
-			while (k) {
-				if (k.nodeType == 3) {
-					str += k.textContent;
-				}
-				k = k.nextSibling;
-			}
-
+	initShaders: function(gl, shaderNames, attributeNames, uniformNames) {
+		// shaderType should be a lower-case letter corresponding to the shader
+		// type (e.g. "v" for vertex shader, "f" for fragment shader)
+		const getShader = function(shaderFilename, shaderType) {
 			let shader;
-			if (shaderScript.type == "x-shader/x-fragment") {
-				shader = gl.createShader(gl.FRAGMENT_SHADER);
-			} else if (shaderScript.type == "x-shader/x-vertex") {
-				shader = gl.createShader(gl.VERTEX_SHADER);
-			} else {
-				throw new Error("Unrecognized shader MIME type: " + shaderScript.type);
+			switch(shaderType) {
+				case "v":
+					shader = gl.createShader(gl.VERTEX_SHADER);
+					break;
+				case "f":
+					shader = gl.createShader(gl.FRAGMENT_SHADER);
+					break;
+				default:
+					throw new Error(`Unrecognized shader type (${shaderType}) for shader "${shaderFilename}"`);
 			}
 
-			gl.shaderSource(shader, str);
+			const shaderSource = require(`./shaders/${shaderFilename}`);
+			gl.shaderSource(shader, shaderSource);
 			gl.compileShader(shader);
 
-			if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-				throw new Error(gl.getShaderInfoLog(shader));
+			if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+				throw new Error(`Failed to compile shader "${shaderFilename}": ${gl.getShaderInfoLog(shader)}`);
 			}
 
 			return shader;
 		};
 
 		const shaderProgram = gl.createProgram();
-		shaderIDs.forEach(function(shaderID) {
-			gl.attachShader(shaderProgram, getShader(shaderID));
+		shaderNames.forEach(function(filename) {
+			const shaderType = filename.charAt(filename.length - ".glsl".length - 1);
+			gl.attachShader(shaderProgram, getShader(filename, shaderType));
 		});
 		gl.linkProgram(shaderProgram);
 

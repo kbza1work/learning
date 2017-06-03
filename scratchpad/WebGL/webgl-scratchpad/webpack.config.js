@@ -23,6 +23,10 @@ module.exports = {
 				cacheDirectory: "",   // cache compilation output in system tmp dir
 				// source maps don't appear to work with Babel
 				//sourceMaps: "inline"
+			},
+			{
+				test: /\.glsl$/,
+				loader: 'webpack-glsl'
 			}
 		]
 	},

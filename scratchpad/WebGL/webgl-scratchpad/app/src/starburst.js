@@ -2,23 +2,34 @@ import {glMatrix, mat4} from 'gl-matrix';
 
 import Util from './util';
 
-const STAR_TEXTURE_URL = "assets/textures/starburst-sprite.gif";
+const initShaders = (gl) => {
+	const shaderSrcFiles = [
+		"texture_v.glsl",
+		"particles_f.glsl",
+	];
+	const attributes = [
+		"aVertexPosition",
+		"aTextureCoord",
+	];
+	const uniforms = [
+		"modelViewMatrix",
+		"perspectiveMatrix",
+		"uSampler",
+		"uColor",
+	];
 
-const STARBURST_SHADERS = [
-	"texture-vertex-shader",
-	"starburst-fragment-shader",
-];
+	return Util.initShaders(
+		gl,
+		shaderSrcFiles,
+		attributes,
+		uniforms
+	);
+};
 
-const STARBURST_SHADER_ATTRIBUTES = [
-	"aVertexPosition",
-	"aTextureCoord",
-];
-const STARBURST_SHADER_UNIFORMS = [
-	"modelViewMatrix",
-	"perspectiveMatrix",
-	"uSampler",
-	"uColor",
-];
+const initTexture = (gl) => {
+	const texture_url = "assets/textures/starburst-sprite.gif";
+	return Util.initTexture(gl, texture_url);
+};
 
 export default function Starburst(gl, numSprites) {
 	this.gl = gl,
@@ -26,14 +37,9 @@ export default function Starburst(gl, numSprites) {
 	this.vao = gl.createVertexArray();
 	gl.bindVertexArray(this.vao);
 
-	this.shaders = Util.initShaders(
-		gl,
-		STARBURST_SHADERS,
-		STARBURST_SHADER_ATTRIBUTES,
-		STARBURST_SHADER_UNIFORMS
-	);
+	this.shaders = initShaders(this.gl);
 
-	this.texture = Util.initTexture(this.gl, STAR_TEXTURE_URL);
+	this.texture = initTexture(this.gl);
 
 	this.position = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.position);
