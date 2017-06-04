@@ -110,9 +110,11 @@ export default class Starburst {
 
 	draw(perspectiveMatrix, t, sceneTranslation) {
 		this.gl.useProgram(this.shaders);
-		this.gl.disable(this.gl.DEPTH_TEST);
+
 		this.gl.enable(this.gl.BLEND);
 		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
+		this.gl.disable(this.gl.DEPTH_TEST);
+
 		this.gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());

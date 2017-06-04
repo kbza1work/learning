@@ -186,9 +186,14 @@ export default class Cube {
 
 	draw(perspectiveMatrix, t, sceneTranslation) {
 		this.gl.useProgram(this.shaders);
-		this.gl.disable(this.gl.DEPTH_TEST);
+
 		this.gl.enable(this.gl.BLEND);
+		// destination alpha multiplier of ONE_MINUS_SRC_ALPHA is conventional
+		// for blending, but ONE has an interesting soft glow appearance
 		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
+		// this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+		this.gl.disable(this.gl.DEPTH_TEST);
+
 		this.gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());

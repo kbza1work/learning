@@ -79,7 +79,7 @@ export default class Pyramid {
 
 		this.color = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.color);
-		const alpha = 0.8;
+		const alpha = 1.0;	// note that alpha will have no effect as long as blending is off
 		const colors = [
 			// front face
 			1.0, 0.0, 0.0, alpha,
@@ -124,8 +124,10 @@ export default class Pyramid {
 
 	draw(perspectiveMatrix, t, sceneTranslation) {
 		this.gl.useProgram(this.shaders);
-		this.gl.enable(this.gl.DEPTH_TEST);
+
 		this.gl.disable(this.gl.BLEND);
+		this.gl.enable(this.gl.DEPTH_TEST);
+
 		this.gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());

@@ -35,8 +35,6 @@ function main() {
 	);
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
-	gl.enable(gl.DEPTH_TEST);
-	gl.disable(gl.BLEND);
 
 	document.onkeydown = function(event) {
 		const key = event.keyCode;
