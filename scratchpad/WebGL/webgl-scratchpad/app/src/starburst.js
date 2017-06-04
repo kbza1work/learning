@@ -2,110 +2,118 @@ import {glMatrix, mat4} from 'gl-matrix';
 
 import Util from './util';
 
-const initShaders = (gl) => {
-	const shaderSrcFiles = [
-		"texture_v.glsl",
-		"particles_f.glsl",
-	];
-	const attributes = [
-		"aVertexPosition",
-		"aTextureCoord",
-	];
-	const uniforms = [
-		"modelViewMatrix",
-		"perspectiveMatrix",
-		"uSampler",
-		"uColor",
-	];
+export default class Starburst {
+	constructor(gl, numSprites) {
+		this.gl = gl,
 
-	return Util.initShaders(
-		gl,
-		shaderSrcFiles,
-		attributes,
-		uniforms
-	);
-};
+		this.vao = this.gl.createVertexArray();
+		this.gl.bindVertexArray(this.vao);
 
-const initTexture = (gl) => {
-	const texture_url = "assets/textures/starburst-sprite.gif";
-	return Util.initTexture(gl, texture_url);
-};
+		this.initShaders();
+		this.initTextures();
+		this.initBuffers(numSprites);
 
-export default function Starburst(gl, numSprites) {
-	this.gl = gl,
+		this.gl.bindVertexArray(null);
+	}
 
-	this.vao = gl.createVertexArray();
-	gl.bindVertexArray(this.vao);
+	initShaders() {
+		const shaderSrcFiles = [
+			"texture_v.glsl",
+			"particles_f.glsl",
+		];
+		const attributes = [
+			"aVertexPosition",
+			"aTextureCoord",
+		];
+		const uniforms = [
+			"modelViewMatrix",
+			"perspectiveMatrix",
+			"uSampler",
+			"uColor",
+		];
 
-	this.shaders = initShaders(this.gl);
-
-	this.texture = initTexture(this.gl);
-
-	this.position = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.position);
-	const vertices = [
-		-1.0, -1.0, 0.0,
-		 1.0, -1.0, 0.0,
-		-1.0,  1.0, 0.0,
-		 1.0,  1.0, 0.0
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	this.position.itemSize = 3;
-	this.position.numItems = 4;
-	this.gl.vertexAttribPointer(
-		this.shaders.aVertexPosition,
-		this.position.itemSize,
-		gl.FLOAT,
-		false,
-		0,
-		0
-	);
-
-	this.textureCoords = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoords);
-	const textureCoords = [
-		0.0, 0.0,
-		1.0, 0.0,
-		0.0, 1.0,
-		1.0, 1.0
-	];
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-	this.textureCoords.itemSize = 2;
-	this.textureCoords.numItems = 4;
-	this.gl.vertexAttribPointer(
-		this.shaders.aTextureCoord,
-		this.textureCoords.itemSize,
-		gl.FLOAT,
-		false,
-		0,
-		0
-	);
-
-	this.sprites = [];
-	for(let i = 0; i < numSprites; i++) {
-		const distance = i/numSprites * 1.0;
-		const rotationSpeed = i/numSprites * 5.0;
-		this.sprites[i] = new StarburstSprite(
+		this.shaders= Util.initShaders(
 			this.gl,
-			distance,
-			rotationSpeed,
-			this.shaders,
-			this.position.numItems
+			shaderSrcFiles,
+			attributes,
+			uniforms
 		);
 	}
 
-	gl.bindVertexArray(null);
+	initTextures() {
+		const texture_url = "assets/textures/starburst-sprite.gif";
+		this.texture = Util.initTexture(this.gl, texture_url);
+	}
 
-	this.draw = function(
-		perspectiveMatrix,
-		t,
-		sceneTranslation
-	) {
-		gl.useProgram(this.shaders);
-		gl.disable(gl.DEPTH_TEST);
-		gl.enable(gl.BLEND);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-		gl.bindVertexArray(this.vao);
+	initBuffers(numSprites) {
+		this.position = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
+		const vertices = [
+			-1.0, -1.0, 0.0,
+			 1.0, -1.0, 0.0,
+			-1.0,  1.0, 0.0,
+			 1.0,  1.0, 0.0
+		];
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			new Float32Array(vertices),
+			this.gl.STATIC_DRAW
+		);
+		this.position.itemSize = 3;
+		this.position.numItems = 4;
+		this.gl.vertexAttribPointer(
+			this.shaders.aVertexPosition,
+			this.position.itemSize,
+			this.gl.FLOAT,
+			false,
+			0,
+			0
+		);
+
+		this.textureCoords = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoords);
+		const textureCoords = [
+			0.0, 0.0,
+			1.0, 0.0,
+			0.0, 1.0,
+			1.0, 1.0
+		];
+		this.gl.bufferData(
+			this.gl.ARRAY_BUFFER,
+			new Float32Array(textureCoords),
+			this.gl.STATIC_DRAW
+		);
+		this.textureCoords.itemSize = 2;
+		this.textureCoords.numItems = 4;
+		this.gl.vertexAttribPointer(
+			this.shaders.aTextureCoord,
+			this.textureCoords.itemSize,
+			this.gl.FLOAT,
+			false,
+			0,
+			0
+		);
+
+		this.sprites = [];
+		for(let i = 0; i < numSprites; i++) {
+			const distance = i/numSprites * 1.0;
+			const rotationSpeed = i/numSprites * 5.0;
+			this.sprites[i] = new StarburstSprite(
+				this.gl,
+				distance,
+				rotationSpeed,
+				this.shaders,
+				this.position.numItems
+			);
+		}
+	}
+
+	draw(perspectiveMatrix, t, sceneTranslation) {
+		this.gl.useProgram(this.shaders);
+		this.gl.disable(this.gl.DEPTH_TEST);
+		this.gl.enable(this.gl.BLEND);
+		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
+		this.gl.bindVertexArray(this.vao);
 
 		let modelViewMatrix = mat4.identity(mat4.create());
 		mat4.translate(
@@ -116,10 +124,10 @@ export default function Starburst(gl, numSprites) {
 		mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -25.0]);
 
 		this.gl.activeTexture(this.gl.TEXTURE0);
-		this.gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 		this.gl.uniform1i(this.shaders.uSampler, 0);
 
-		gl.uniformMatrix4fv(
+		this.gl.uniformMatrix4fv(
 			this.shaders.perspectiveMatrix,
 			false,
 			perspectiveMatrix
@@ -129,49 +137,53 @@ export default function Starburst(gl, numSprites) {
 			sprite.draw(t, modelViewMatrix);
 		});
 
-		gl.bindVertexArray(null);
-	};
+		this.gl.bindVertexArray(null);
+	}
 }
 
-function StarburstSprite(gl, distance, rotationSpeed, shaders, verticesPerStar) {
+class StarburstSprite {
+	constructor(gl, distance, rotationSpeed, shaders, verticesPerStar) {
+		this.gl = gl,
+		this.shaders = shaders;
 
-	this.gl = gl,
-	this.shaders = shaders;
+		this.distance = distance;
+		this.rotationSpeed = rotationSpeed;
 
-	this.distance = distance;
-	this.rotationSpeed = rotationSpeed;
+		this.verticesPerStar = verticesPerStar;
 
-	this.verticesPerStar = verticesPerStar;
+		this.color = {
+			red: Math.random(),
+			green: Math.random(),
+			blue: Math.random()
+		};
+	}
 
-	this.color = {
-		red: Math.random(),
-		green: Math.random(),
-		blue: Math.random()
-	};
-
-	this.spin = function(t) {
+	spin(t) {
 		return this.rotationSpeed * glMatrix.toRadian(t);
-	};
+	}
 
-	this.draw = function(t, modelViewMatrix) {
+	draw(t, modelViewMatrix) {
 		const spinAngle = this.spin(t);
 		mat4.rotateZ(modelViewMatrix, modelViewMatrix, spinAngle);
-		mat4.translate(modelViewMatrix, modelViewMatrix, [10.0 * this.distance, this.distance, 0.0]);
+		mat4.translate(
+			modelViewMatrix,
+			modelViewMatrix,
+			[10.0 * this.distance, this.distance, 0.0]
+		);
 		mat4.rotateZ(modelViewMatrix, modelViewMatrix, -spinAngle);
 
-		gl.uniformMatrix4fv(
+		this.gl.uniformMatrix4fv(
 			this.shaders.modelViewMatrix,
 			false,
 			modelViewMatrix
 		);
-		gl.uniform3f(
+		this.gl.uniform3f(
 			this.shaders.uColor,
 			this.color.red,
 			this.color.green,
 			this.color.blue
 		);
 
-		this.gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.verticesPerStar);
-	};
+		this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.verticesPerStar);
+	}
 }
-
