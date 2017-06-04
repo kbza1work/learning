@@ -11,22 +11,34 @@ module.exports = {
 	// source maps don't appear to work with Babel
 	// devtool: "#source-map",
 	module: {
-		loaders: [
-			{ test: /\.css$/, loader: "style!css" },
+		rules: [
+			{
+				test: /\.css$/,
+				use: [
+					"style-loader",
+					"css-loader",
+				]
+			},
 			{
 				test: /\.js$/,
 				exclude: /(node_modules)/,
-				loader: "babel",
-				query: {
-				  presets: ["es2015"]
-				},
-				cacheDirectory: "",   // cache compilation output in system tmp dir
-				// source maps don't appear to work with Babel
-				//sourceMaps: "inline"
+				use: [
+					{
+						loader: "babel-loader",
+						options: {
+							presets: ["es2015", "es2016"],
+							cacheDirectory: "",   // cache compilation output in system tmp dir
+							// source maps don't appear to work with Babel
+							//sourceMaps: "inline"
+						},
+					},
+				],
 			},
 			{
 				test: /\.glsl$/,
-				loader: 'webpack-glsl'
+				use: [
+					"webpack-glsl-loader",
+				],
 			}
 		]
 	},
