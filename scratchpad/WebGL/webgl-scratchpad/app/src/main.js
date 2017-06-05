@@ -62,8 +62,8 @@ function main() {
 
 	let t = 0;
 	let t_last_report = 0;
-	let timer_start_time_ms = Date.now();
-	(function drawScene() {
+	let last_report_timestamp_ms = performance.now();
+	(function drawScene(timestamp_ms) {
 		window.requestAnimationFrame(drawScene);
 
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -93,18 +93,16 @@ function main() {
 			);
 		}
 
-		t++;
+		if(Settings.FRAMES_PER_FPS_REPORT > 0 && (t - t_last_report) == Settings.FRAMES_PER_FPS_REPORT) {
+			const elapsed_ms = timestamp_ms - last_report_timestamp_ms;
+			const avg_render_time_ms = elapsed_ms/Settings.FRAMES_PER_FPS_REPORT;
+			const fps = 1000.0/avg_render_time_ms;
+			console.log(`last ${Settings.FRAMES_PER_FPS_REPORT} frames: avg render time: ${avg_render_time_ms.toFixed(0)} ms, ${fps.toFixed(0)} fps`);
+			t_last_report = t;
+			last_report_timestamp_ms = timestamp_ms;
+		}
 
-		// fps counter disabled to avoid spamming the console
-		// if((t - t_last_report) == FRAMES_PER_FPS_REPORT) {
-		// 	var now = Date.now();
-		// 	var elapsed_ms = now - timer_start_time_ms;
-		// 	var avg_render_time_ms = elapsed_ms/FRAMES_PER_FPS_REPORT;
-		// 	var fps = 1000.0/avg_render_time_ms;
-		// 	console.log("avg render time: " + avg_render_time_ms + " ms (last " + FRAMES_PER_FPS_REPORT + " frames), " + fps + " fps");
-		// 	t_last_report = t;
-		// 	timer_start_time_ms = now;
-		// }
+		t++;
 	})();
 }
 
