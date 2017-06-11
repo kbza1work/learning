@@ -1,3 +1,5 @@
+import {glMatrix, mat4} from 'gl-matrix';
+
 export default {
 	// return a new WebGL context for the given canvas element, or throw an
 	// exception if something went wrong
@@ -9,15 +11,31 @@ export default {
 		return gl;
 	},
 
+	// returns a boolean indicating whether a canvas resize occurred
 	resizeCanvas: function(canvas) {
-		const fullWidth = canvas.clientWidth;
-		const fullHeight = canvas.clientHeight;
-		if(canvas.width !== fullWidth) {
-			canvas.width = fullWidth;
+		let resizeOccurred = false;
+
+		const currentWidth = canvas.clientWidth;
+		const currentHeight = canvas.clientHeight;
+		if(canvas.width !== currentWidth || canvas.height !== currentHeight) {
+			canvas.width = currentWidth;
+			canvas.height = currentHeight;
+
+			resizeOccurred = true;
 		}
-		if(canvas.height !== fullHeight) {
-			canvas.height = fullHeight;
-		}
+
+		return resizeOccurred;
+	},
+
+	// calculates and returns a new perspective matrix
+	perspectiveMatrix: function(aspectRatio, fovy) {
+		return mat4.perspective(
+			mat4.create(),
+			glMatrix.toRadian(fovy),
+			aspectRatio,
+			0.1,
+			100.0,
+		);
 	},
 
 	initShaders: function(gl, shaderNames, attributeNames, uniformNames) {

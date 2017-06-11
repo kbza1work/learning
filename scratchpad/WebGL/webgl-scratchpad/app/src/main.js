@@ -27,12 +27,9 @@ function main() {
 	const starburst = Settings.ENABLE_STARBURST ? new Starburst(gl, Settings.NUM_STARBURST_SPRITES) : null;
 
 	let sceneTranslation = Settings.INITIAL_SCENE_TRANSLATION;
-	const perspectiveMatrix = mat4.perspective(
-		mat4.create(),
-		glMatrix.toRadian(Settings.FOVY),
+	let perspectiveMatrix = Util.perspectiveMatrix(
 		canvas.clientWidth/canvas.clientHeight,
-		0.1,
-		100.0
+		Settings.FOVY,
 	);
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
@@ -66,6 +63,13 @@ function main() {
 	let last_report_timestamp_ms = performance.now();
 	(function drawScene(timestamp_ms) {
 		window.requestAnimationFrame(drawScene);
+
+		if(Util.resizeCanvas(canvas)) {
+			perspectiveMatrix = Util.perspectiveMatrix(
+				canvas.clientWidth/canvas.clientHeight,
+				Settings.FOVY,
+			);
+		}
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
