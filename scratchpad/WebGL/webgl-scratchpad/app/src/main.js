@@ -20,6 +20,7 @@ function main() {
 	Util.resizeCanvas(canvas);
 	const gl = Util.initGL(canvas);
 	console.log(`Acquired WebGL context.`);
+	gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
 	const pyramid = Settings.ENABLE_PYRAMID ? new Pyramid(gl) : null;
 	const cube = Settings.ENABLE_CUBE ? new Cube(gl) : null;
@@ -29,7 +30,7 @@ function main() {
 	const perspectiveMatrix = mat4.perspective(
 		mat4.create(),
 		glMatrix.toRadian(Settings.FOVY),
-		gl.viewportWidth/gl.viewportHeight,
+		canvas.clientWidth/canvas.clientHeight,
 		0.1,
 		100.0
 	);
@@ -66,7 +67,6 @@ function main() {
 	(function drawScene(timestamp_ms) {
 		window.requestAnimationFrame(drawScene);
 
-		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		if(Settings.ENABLE_STARBURST) {

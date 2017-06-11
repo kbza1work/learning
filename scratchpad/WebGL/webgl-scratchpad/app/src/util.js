@@ -3,8 +3,6 @@ export default {
 	// exception if something went wrong
 	initGL: function(canvas) {
 		const gl = canvas.getContext("webgl2", { alpha: false });
-		gl.viewportWidth = canvas.width;
-		gl.viewportHeight = canvas.height;
 		if(gl === null) {
 			throw new Error("Failed to initialize WebGL context");
 		}
