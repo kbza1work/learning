@@ -1,8 +1,8 @@
 var path = require("path");
 
 module.exports = {
-	context: path.resolve(__dirname, "app/src"),
-	entry: path.resolve(__dirname, "app/src/main.js"),
+	context: path.resolve(__dirname, "src/js"),
+	entry: path.resolve(__dirname, "src/js/main.js"),
 	output: {
 		path: path.resolve(__dirname, "build"),
 		publicPath: "http://localhost:8080/app/",
@@ -44,7 +44,7 @@ module.exports = {
 	},
 	devServer: {
 		publicPath: "/",
-		contentBase: "./app",
+		contentBase: "./src",
 		inline: true,
 		overlay: true
 	}

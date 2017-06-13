@@ -54,7 +54,7 @@ export default {
 					throw new Error(`Unrecognized shader type (${shaderType}) for shader "${shaderFilename}"`);
 			}
 
-			const shaderSource = require(`./shaders/${shaderFilename}`);
+			const shaderSource = require(`./../shaders/${shaderFilename}`);
 			gl.shaderSource(shader, shaderSource);
 			gl.compileShader(shader);
 
