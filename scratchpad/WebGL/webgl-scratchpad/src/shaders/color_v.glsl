@@ -1,4 +1,5 @@
 #version 300 es
+
 in vec3 aVertexPosition;
 in vec4 aVertexColor;
 

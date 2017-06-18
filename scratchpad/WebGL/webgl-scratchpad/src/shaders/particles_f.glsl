@@ -1,5 +1,6 @@
 #version 300 es
-precision highp float;
+
+precision mediump float;
 
 uniform sampler2D uSampler;
 uniform vec3 uColor;
