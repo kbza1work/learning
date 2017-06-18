@@ -7,6 +7,7 @@ export default class Starburst {
 		this.gl = gl,
 
 		this.vao = this.gl.createVertexArray();
+		this.vao.__SPECTOR_Metadata = { name: 'Starburst VAO' }
 		this.gl.bindVertexArray(this.vao);
 
 		this.initShaders();
@@ -47,6 +48,7 @@ export default class Starburst {
 
 	initBuffers(numSprites) {
 		this.position = this.gl.createBuffer();
+		this.position.__SPECTOR_Metadata = { name: 'Starburst Position Buffer' }
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			-1.0, -1.0, 0.0,
@@ -71,6 +73,7 @@ export default class Starburst {
 		);
 
 		this.textureCoords = this.gl.createBuffer();
+		this.textureCoords.__SPECTOR_Metadata = { name: 'Starburst Texture Buffer' }
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoords);
 		const textureCoords = [
 			0.0, 0.0,

@@ -7,6 +7,7 @@ export default class Pyramid {
 		this.gl = gl,
 
 		this.vao = this.gl.createVertexArray();
+		this.vao.__SPECTOR_Metadata = { name: 'Pyramid VAO' }
 		this.gl.bindVertexArray(this.vao);
 
 		this.initShaders();
@@ -39,6 +40,7 @@ export default class Pyramid {
 
 	initBuffers() {
 		this.position = this.gl.createBuffer();
+		this.position.__SPECTOR_Metadata = { name: 'Pyramid Position Buffer' }
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			// front face
@@ -78,6 +80,7 @@ export default class Pyramid {
 		);
 
 		this.color = this.gl.createBuffer();
+		this.color.__SPECTOR_Metadata = { name: 'Cube Color Buffer' }
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.color);
 		const alpha = 1.0;	// note that alpha will have no effect as long as blending is off
 		const colors = [

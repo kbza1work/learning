@@ -7,6 +7,7 @@ export default class Cube {
 		this.gl = gl;
 
 		this.vao = this.gl.createVertexArray();
+		this.vao.__SPECTOR_Metadata = { name: 'Cube VAO' }
 		this.gl.bindVertexArray(this.vao);
 
 		this.initShaders();
@@ -47,6 +48,7 @@ export default class Cube {
 
 	initBuffers() {
 		this.position = this.gl.createBuffer();
+		this.position.__SPECTOR_Metadata = { name: 'Cube Position Buffer' }
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			// Front face
@@ -102,6 +104,9 @@ export default class Cube {
 		);
 
 		this.textureCoords = this.gl.createBuffer();
+		this.textureCoords.__SPECTOR_Metadata = {
+			name: 'Cube Texture Coordinate Buffer'
+		}
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoords);
 		const textureCoords = [
 		  // Front face
@@ -157,6 +162,7 @@ export default class Cube {
 		);
 
 		this.index = this.gl.createBuffer();
+		this.index.__SPECTOR_Metadata = { name: 'Cube Index Buffer' }
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.index);
 		const indices = [
 			0, 1, 2,	  0, 2, 3,	  // Front face
