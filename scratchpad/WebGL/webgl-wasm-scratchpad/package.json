@@ -1,0 +1,31 @@
+{
+  "name": "webgl-wasm-scratchpad",
+  "version": "0.1.0",
+  "description": "A simple WebGL program for learning purposes, using web assembly.",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starim/learning.git"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "rust-wasm-loader": "^0.1.2",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0",
+    "webpack-glsl-loader": "^1.0.1"
+  },
+  "dependencies": {
+    "milligram": "^1.3.0"
+  },
+  "scripts": {
+    "build": "\"$(npm bin)\"/webpack --progress --colors --display-error-details",
+    "serve": "NODE_ENV=development \"$(npm bin)\"/webpack-dev-server --hot --open",
+    "test": "\"$(npm bin)\"/karma start karma.conf.js"
+  },
+  "engines": {
+    "node": ">= 3.0"
+  }
+}

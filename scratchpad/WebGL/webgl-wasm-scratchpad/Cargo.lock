@@ -1,0 +1,4 @@
+[root]
+name = "webgl-wasm-scratchpad"
+version = "0.1.0"
+
