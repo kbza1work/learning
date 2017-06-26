@@ -58,9 +58,11 @@ module.exports = {
 		inline: true,
 		overlay: true
 	},
-	plugins: [
-		new webpack.optimize.ModuleConcatenationPlugin(),
-	],
+	// currently the ModuleConcatenationPlugin breaks webpack dev server hot reloading
+	// plugins: [
+	// 	new webpack.optimize.ModuleConcatenationPlugin(),
+	// ],
+	// Emscripten's generated glue code requires these Node utilities
 	// Emscripten's generated glue code requires these Node utilities
 	externals: {
 		'fs': true,
