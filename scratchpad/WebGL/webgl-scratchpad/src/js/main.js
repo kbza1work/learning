@@ -34,7 +34,7 @@ function main() {
 
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 
-	document.onkeydown = function(event) {
+	document.addEventListener("keydown", (event) => {
 		const key = event.keyCode;
 
 		// TODO: try to get smoother scrolling using the keydown method from
