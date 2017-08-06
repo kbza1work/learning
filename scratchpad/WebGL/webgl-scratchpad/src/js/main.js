@@ -56,7 +56,30 @@ function main() {
 				sceneTranslation.z += Settings.SCENE_TRANSLATION_STEP;
 				break;
 		};
-	};
+	});
+
+	let isDragging = false;
+	let lastMouseX = null;
+	let lastMouseY = null;
+	let xRotation = null;
+	let yRotation = null;
+	canvas.addEventListener("mousedown", (event) => {
+		isDragging = true;
+		lastMouseX = event.pageX;
+		lastMouseY = event.pageY;
+	});
+	canvas.addEventListener("mousemove", (event) => {
+		if(isDragging) {
+			sceneTranslation.x += (event.pageX - lastMouseX) / 50.0;
+			sceneTranslation.y -= (event.pageY - lastMouseY) / 50.0;
+
+			lastMouseX = event.pageX;
+			lastMouseY = event.pageY;
+		}
+	});
+	canvas.addEventListener("mouseup", (event) => {
+		isDragging = false;
+	});
 
 	let t = 0;
 	let t_last_report = 0;

@@ -137,7 +137,7 @@ export default class Pyramid {
 		mat4.translate(
 			modelViewMatrix,
 			modelViewMatrix,
-			[sceneTranslation.x, 0, sceneTranslation.z]
+			[sceneTranslation.x, sceneTranslation.y, sceneTranslation.z],
 		);
 		mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -5.0]);
 		mat4.rotateY(

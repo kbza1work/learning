@@ -124,7 +124,7 @@ export default class Starburst {
 		mat4.translate(
 			modelViewMatrix,
 			modelViewMatrix,
-			[sceneTranslation.x, 0, sceneTranslation.z]
+			[sceneTranslation.x, sceneTranslation.y, sceneTranslation.z],
 		);
 		mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -25.0]);
 

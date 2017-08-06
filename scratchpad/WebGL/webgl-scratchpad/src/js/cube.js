@@ -206,7 +206,7 @@ export default class Cube {
 		mat4.translate(
 			modelViewMatrix,
 			modelViewMatrix,
-			[sceneTranslation.x, 0, sceneTranslation.z]
+			[sceneTranslation.x, sceneTranslation.y, sceneTranslation.z],
 		);
 		mat4.translate(modelViewMatrix, modelViewMatrix, [1.5, 0.0, -6.0]);
 		const currentRotation = this.rotation(t);
