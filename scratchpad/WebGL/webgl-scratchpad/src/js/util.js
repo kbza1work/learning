@@ -4,7 +4,7 @@ export default {
 	// return a new WebGL context for the given canvas element, or throw an
 	// exception if something went wrong
 	initGL: function(canvas) {
-		const gl = canvas.getContext("webgl2", { alpha: false });
+		const gl = canvas.getContext("webgl2", { alpha: false, premultipliedAlpha: false });
 		if(gl === null) {
 			throw new Error("Failed to initialize WebGL context");
 		}
