@@ -43,7 +43,11 @@ export default class Cube {
 
 	initTextures() {
 		const texture_url = "assets/textures/glass.gif";
-		this.texture = Util.initTexture(this.gl, texture_url);
+		this.texture = Util.initTexture(
+			this.gl,
+			texture_url,
+			{ [this.gl.TEXTURE_MIN_FILTER]: this.gl.LINEAR_MIPMAP_NEAREST },
+		);
 	}
 
 	initBuffers() {

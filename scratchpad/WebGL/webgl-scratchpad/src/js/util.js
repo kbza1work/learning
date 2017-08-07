@@ -92,10 +92,10 @@ export default {
 		return shaderProgram;
 	},
 
-	initTexture: function(gl, textureUrl) {
+	initTexture: function(gl, textureUrl, options = {}) {
 		const handleLoadedTexture = function(texture) {
 			gl.bindTexture(gl.TEXTURE_2D, texture);
-			// for .gif
+			// for .gif or jpg
 			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 			gl.texImage2D(
 				gl.TEXTURE_2D,
@@ -105,12 +105,16 @@ export default {
 				gl.UNSIGNED_BYTE,
 				texture.image
 			);
+			for(let optionName in options) {
+				gl.texParameteri(gl.TEXTURE_2D, optionName, options[optionName]);
+			}
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 			gl.texParameteri(
 				gl.TEXTURE_2D,
 				gl.TEXTURE_MIN_FILTER,
 				gl.LINEAR_MIPMAP_NEAREST
 			);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 			gl.generateMipmap(gl.TEXTURE_2D);
 
 			gl.bindTexture(gl.TEXTURE_2D, null);
@@ -124,5 +128,12 @@ export default {
 		texture.image.src = textureUrl;
 
 		return texture;
+	},
+
+	createBuffer: (gl, bufferType, DataType, data, storage_hint="STATIC_DRAW") => {
+		const buffer = gl.createBuffer();
+		gl.bindBuffer(gl[bufferType], buffer);
+		gl.bufferData(gl[bufferType], new DataType(data), gl[storage_hint]);
+		return buffer;
 	},
 };

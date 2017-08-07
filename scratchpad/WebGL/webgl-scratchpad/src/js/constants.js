@@ -11,4 +11,6 @@ export default {
 
 	ENABLE_STARBURST: true,
 	NUM_STARBURST_SPRITES: 50,
+
+	ENABLE_FLAMES: true,
 };

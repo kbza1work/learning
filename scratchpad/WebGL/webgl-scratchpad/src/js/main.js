@@ -7,6 +7,7 @@ import Util from './util';
 import Pyramid from './pyramid';
 import Cube from './cube';
 import Starburst from './starburst';
+import Flame from './flame';
 
 function main() {
 	const canvas = document.getElementById(Settings.WEBGL_CANVAS_ID);
@@ -25,6 +26,8 @@ function main() {
 	const pyramid = Settings.ENABLE_PYRAMID ? new Pyramid(gl) : null;
 	const cube = Settings.ENABLE_CUBE ? new Cube(gl) : null;
 	const starburst = Settings.ENABLE_STARBURST ? new Starburst(gl, Settings.NUM_STARBURST_SPRITES) : null;
+	const redFlame = Settings.ENABLE_FLAMES ? new Flame(gl, [0.0, 0.0, -1.0], [0.8, 0.25, 0.25, 1.0], 1000) : null;
+	const purpleFlame = Settings.ENABLE_FLAMES ? new Flame(gl, [0.5, 0.0, -1.0], [0.25, 0.25, 8.25, 1.0], 1000) : null;
 
 	let sceneTranslation = Settings.INITIAL_SCENE_TRANSLATION;
 	let perspectiveMatrix = Util.perspectiveMatrix(
@@ -98,6 +101,19 @@ function main() {
 
 		if(Settings.ENABLE_STARBURST) {
 			starburst.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation
+			);
+		}
+
+		if(Settings.ENABLE_FLAMES) {
+			redFlame.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation
+			);
+			purpleFlame.draw(
 				perspectiveMatrix,
 				t,
 				sceneTranslation
