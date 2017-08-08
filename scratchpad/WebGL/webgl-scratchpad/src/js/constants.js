@@ -14,4 +14,5 @@ export default {
 
 	ENABLE_RED_FLAME: true,
 	ENABLE_PURPLE_FLAME: true,
+	NUM_FLAME_SPRITES: 1000,
 };
