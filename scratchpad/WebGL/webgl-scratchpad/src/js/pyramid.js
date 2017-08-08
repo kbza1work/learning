@@ -39,9 +39,6 @@ export default class Pyramid {
 	};
 
 	initBuffers() {
-		this.position = this.gl.createBuffer();
-		this.position.__SPECTOR_Metadata = { name: 'Pyramid Position Buffer' }
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			// front face
 			 0.0,  1.0,  0.0,
@@ -63,11 +60,9 @@ export default class Pyramid {
 			-1.0, -1.0, -1.0,
 			-1.0, -1.0,  1.0,
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(vertices),
-			this.gl.STATIC_DRAW
-		);
+		this.position =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, vertices);
+		this.position.__SPECTOR_Metadata = { name: 'Pyramid Position Buffer' }
 		this.position.itemSize = 3;
 		this.position.numItems = 12;
 		this.gl.vertexAttribPointer(
@@ -79,9 +74,6 @@ export default class Pyramid {
 			0
 		);
 
-		this.color = this.gl.createBuffer();
-		this.color.__SPECTOR_Metadata = { name: 'Cube Color Buffer' }
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.color);
 		const alpha = 1.0;	// note that alpha will have no effect as long as blending is off
 		const colors = [
 			// front face
@@ -104,11 +96,9 @@ export default class Pyramid {
 			0.0, 0.0, 1.0, alpha,
 			0.0, 1.0, 0.0, alpha,
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(colors),
-			this.gl.STATIC_DRAW
-		);
+		this.color =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, colors);
+		this.color.__SPECTOR_Metadata = { name: 'Cube Color Buffer' }
 		this.color.itemSize = 4;
 		this.color.numItems = 12;
 		this.gl.vertexAttribPointer(

@@ -47,20 +47,15 @@ export default class Starburst {
 	}
 
 	initBuffers(numSprites) {
-		this.position = this.gl.createBuffer();
-		this.position.__SPECTOR_Metadata = { name: 'Starburst Position Buffer' }
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			-1.0, -1.0, 0.0,
 			 1.0, -1.0, 0.0,
 			-1.0,  1.0, 0.0,
 			 1.0,  1.0, 0.0
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(vertices),
-			this.gl.STATIC_DRAW
-		);
+		this.position =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, vertices);
+		this.position.__SPECTOR_Metadata = { name: 'Starburst Position Buffer' }
 		this.position.itemSize = 3;
 		this.position.numItems = 4;
 		this.gl.vertexAttribPointer(
@@ -72,20 +67,15 @@ export default class Starburst {
 			0
 		);
 
-		this.textureCoords = this.gl.createBuffer();
-		this.textureCoords.__SPECTOR_Metadata = { name: 'Starburst Texture Buffer' }
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoords);
 		const textureCoords = [
 			0.0, 0.0,
 			1.0, 0.0,
 			0.0, 1.0,
 			1.0, 1.0
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(textureCoords),
-			this.gl.STATIC_DRAW
-		);
+		this.textureCoords =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, textureCoords);
+		this.textureCoords.__SPECTOR_Metadata = { name: 'Starburst Texture Buffer' }
 		this.textureCoords.itemSize = 2;
 		this.textureCoords.numItems = 4;
 		this.gl.vertexAttribPointer(

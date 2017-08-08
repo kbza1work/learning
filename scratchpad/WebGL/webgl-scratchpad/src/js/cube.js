@@ -51,9 +51,6 @@ export default class Cube {
 	}
 
 	initBuffers() {
-		this.position = this.gl.createBuffer();
-		this.position.__SPECTOR_Metadata = { name: 'Cube Position Buffer' }
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.position);
 		const vertices = [
 			// Front face
 			-1.0, -1.0,  1.0,
@@ -91,11 +88,9 @@ export default class Cube {
 			-1.0,  1.0,  1.0,
 			-1.0,  1.0, -1.0
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(vertices),
-			this.gl.STATIC_DRAW
-		);
+		this.position =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, vertices);
+		this.position.__SPECTOR_Metadata = { name: 'Cube Position Buffer' };
 		this.position.itemSize = 3;
 		this.position.numItems = 24;
 		this.gl.vertexAttribPointer(
@@ -107,11 +102,6 @@ export default class Cube {
 			0
 		);
 
-		this.textureCoords = this.gl.createBuffer();
-		this.textureCoords.__SPECTOR_Metadata = {
-			name: 'Cube Texture Coordinate Buffer'
-		}
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureCoords);
 		const textureCoords = [
 		  // Front face
 		  0.0, 0.0,
@@ -149,11 +139,11 @@ export default class Cube {
 		  1.0, 1.0,
 		  0.0, 1.0,
 		];
-		this.gl.bufferData(
-			this.gl.ARRAY_BUFFER,
-			new Float32Array(textureCoords),
-			this.gl.STATIC_DRAW
-		);
+		this.textureCoords =
+			Util.createBuffer(this.gl, "ARRAY_BUFFER", Float32Array, textureCoords);
+		this.textureCoords.__SPECTOR_Metadata = {
+			name: 'Cube Texture Coordinate Buffer'
+		};
 		this.textureCoords.itemSize = 2;
 		this.textureCoords.numItems = 24;
 		this.gl.vertexAttribPointer(
@@ -165,9 +155,6 @@ export default class Cube {
 			0
 		);
 
-		this.index = this.gl.createBuffer();
-		this.index.__SPECTOR_Metadata = { name: 'Cube Index Buffer' }
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.index);
 		const indices = [
 			0, 1, 2,	  0, 2, 3,	  // Front face
 			4, 5, 6,	  4, 6, 7,	  // Back face
@@ -176,11 +163,9 @@ export default class Cube {
 			16, 17, 18,   16, 18, 19, // Right face
 			20, 21, 22,   20, 22, 23  // Left face
 		];
-		this.gl.bufferData(
-			this.gl.ELEMENT_ARRAY_BUFFER,
-			new Uint16Array(indices),
-			this.gl.STATIC_DRAW
-		);
+		this.index =
+			Util.createBuffer(this.gl, "ELEMENT_ARRAY_BUFFER", Uint16Array, indices);
+		this.index.__SPECTOR_Metadata = { name: 'Cube Index Buffer' };
 		this.index.itemSize = 1;
 		this.index.numItems = 36;
 	}
