@@ -1,3 +1,5 @@
+"use strict";
+
 import {glMatrix, mat4} from 'gl-matrix';
 
 export default {

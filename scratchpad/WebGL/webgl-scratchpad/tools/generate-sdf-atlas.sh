@@ -33,7 +33,7 @@ mkdir -p "$tmpdir"
 for code_point in $(seq $min_code_point $max_code_point); do
 	echo "Generating signed distance field for code point $code_point..."
 	printf -v formatted_code_point "%05d\n" $code_point
-	msdfgen msdf -font "$font" "$code_point" -o "$tmpdir/$formatted_code_point.png" -size "$size" "$size" -autoframe
+	msdfgen msdf -font "$font" "$code_point" -o "$tmpdir/$formatted_code_point.png" -size "$size" "$size" -autoframe -pxrange 1
 done
 
 echo "Combining signed distance fields..."

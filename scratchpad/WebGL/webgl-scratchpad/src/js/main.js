@@ -8,6 +8,8 @@ import Pyramid from './pyramid';
 import Cube from './cube';
 import Starburst from './starburst';
 import Flame from './flame';
+import FixedText from './fixed-text';
+import Ground from './ground';
 
 function main() {
 	const canvas = document.getElementById(Settings.WEBGL_CANVAS_ID);
@@ -32,6 +34,8 @@ function main() {
 	const purpleFlame = Settings.ENABLE_PURPLE_FLAME ?
 		new Flame(gl, [0.5, 0.0, -1.0], [0.25, 0.25, 8.25, 1.0], Settings.NUM_FLAME_SPRITES) :
 		null;
+	const hudText = Settings.ENABLE_TEXT ? new FixedText(gl) : null;
+	const ground = Settings.ENABLE_GROUND ? new Ground(gl, Settings.GROUND_Z_POSITION) : null;
 
 	let sceneTranslation = Settings.INITIAL_SCENE_TRANSLATION;
 	let perspectiveMatrix = Util.perspectiveMatrix(
@@ -111,6 +115,14 @@ function main() {
 			);
 		}
 
+		if(Settings.ENABLE_GROUND) {
+			ground.draw(
+				perspectiveMatrix,
+				t,
+				sceneTranslation,
+			);
+		}
+
 		if(Settings.ENABLE_RED_FLAME) {
 			redFlame.draw(
 				perspectiveMatrix,
@@ -140,6 +152,17 @@ function main() {
 				t,
 				sceneTranslation
 			);
+		}
+
+		if(Settings.ENABLE_TEXT) {
+			const screenWidth = gl.drawingBufferWidth;
+			const screenHeight = gl.drawingBufferHeight;
+			const position = [0.1 * screenWidth, 0.5 * screenHeight];
+			const text = "test text";
+			const fontSize = 100;
+			const color = [0, 0, 0, 1.0];
+			const bgColor = [1.0, 1.0, 1.0, 1.0];
+			hudText.draw(position, text, fontSize, color, bgColor);
 		}
 
 		if(Settings.FRAMES_PER_FPS_REPORT > 0 && (t - t_last_report) == Settings.FRAMES_PER_FPS_REPORT) {
