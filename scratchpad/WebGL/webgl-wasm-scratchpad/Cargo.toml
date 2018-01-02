@@ -1,0 +1,6 @@
+[package]
+name = "webgl-wasm-scratchpad"
+version = "0.1.0"
+authors = ["Brent Houghton <brent@slixbits.com>"]
+
+[dependencies]

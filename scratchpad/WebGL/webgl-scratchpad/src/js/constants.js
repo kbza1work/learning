@@ -1,0 +1,25 @@
+"use strict";
+
+export default {
+	WEBGL_CANVAS_ID: "drawing-canvas",
+	FRAMES_PER_FPS_REPORT: 0,
+	FOVY: 45,
+	INITIAL_SCENE_TRANSLATION: { x: 0, y: 0, z: 0 },
+	SCENE_TRANSLATION_STEP: 1,
+
+	ENABLE_PYRAMID: false,
+
+	ENABLE_CUBE: false,
+
+	ENABLE_STARBURST: false,
+	NUM_STARBURST_SPRITES: 50,
+
+	ENABLE_RED_FLAME: false,
+	ENABLE_PURPLE_FLAME: false,
+	NUM_FLAME_SPRITES: 1000,
+
+	ENABLE_TEXT: true,
+
+	ENABLE_GROUND: false,
+	GROUND_Z_POSITION: -1.0,
+};
