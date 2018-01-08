@@ -15,8 +15,8 @@ pub struct Shader {
     pub ID: u32,
 }
 
-/// NOTE: mixture of `shader_s.h` and `shader_m.h` (the latter just contains
-/// a few more setters for uniforms)
+/// panics if the shader files can't be found, the shaders fail to compile, or the shader program
+/// fails to link
 #[allow(dead_code)]
 impl Shader {
     pub fn new(vertexPath: &str, fragmentPath: &str) -> Shader {
@@ -113,7 +113,7 @@ impl Shader {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                println!("ERROR::SHADER_COMPILATION_ERROR of type: {}\n{}\n \
+                panic!("ERROR::SHADER_COMPILATION_ERROR of type: {}\n{}\n \
                           -- --------------------------------------------------- -- ",
                          type_,
                          String::from_utf8_lossy(&info_log),
@@ -129,7 +129,7 @@ impl Shader {
                     ptr::null_mut(),
                     info_log.as_mut_ptr() as *mut GLchar,
                 );
-                println!("ERROR::PROGRAM_LINKING_ERROR of type: {}\n{}\n \
+                panic!("ERROR::PROGRAM_LINKING_ERROR of type: {}\n{}\n \
                           -- --------------------------------------------------- -- ",
                          type_,
                          String::from_utf8_lossy(&info_log),
