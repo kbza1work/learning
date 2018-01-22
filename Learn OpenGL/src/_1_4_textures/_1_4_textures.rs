@@ -156,7 +156,7 @@ pub fn main_1_4() {
         (shader_program, vao, vbo, ebo, texture1, texture2)
     };
 
-    let mut mix_ratio = 0.2;
+    let mix_ratio = 0.2;
     while !window.should_close() {
         process_events(&mut window, &events);
 
