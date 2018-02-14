@@ -12,12 +12,14 @@ mod _1_2_hello_triangle;
 mod _1_3_shaders;
 mod _1_4_textures;
 mod _1_5_transformations;
+mod _1_6_coordinate_systems;
 #[cfg(feature = "chapter-1")]
 use _1_1_hello_window::*;
 use _1_2_hello_triangle::*;
 use _1_3_shaders::*;
 use _1_4_textures::*;
 use _1_5_transformations::*;
+use _1_6_coordinate_systems::*;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -33,6 +35,7 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1.3" => main_1_3(),
         #[cfg(feature = "chapter-1")] "1.4" => main_1_4(),
         #[cfg(feature = "chapter-1")] "1.5" => main_1_5(),
+        #[cfg(feature = "chapter-1")] "1.6" => main_1_6(),
 
         _ => println!("Unknown tutorial id"),
     }
