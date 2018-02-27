@@ -15,7 +15,7 @@ use std::path::Path;
 use cgmath::{Deg, Matrix4, Vector3};
 
 use common::shader::Shader;
-use scene_element::SceneElement;
+use super::scene_element::SceneElement;
 
 pub struct CubeCloud {
     shader_program: Shader,

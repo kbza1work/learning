@@ -7,8 +7,8 @@ use cgmath::{Point3, Vector3};
 
 use std::sync::mpsc::Receiver;
 
-use scene_graph::SceneGraph;
-use cube_cloud::CubeCloud;
+use super::scene_graph::SceneGraph;
+use super::cube_cloud::CubeCloud;
 
 const SRC_FOLDER: &'static str = "_1_6_coordinate_systems";
 const WINDOW_NAME: &'static str = "Learn OpenGL Lesson 1.6 Coordinate Systems";
@@ -16,7 +16,7 @@ const WINDOW_NAME: &'static str = "Learn OpenGL Lesson 1.6 Coordinate Systems";
 const SCREEN_WIDTH: u32 = 1024;
 const SCREEN_HEIGHT: u32 = 768;
 
-pub fn main_1_6() {
+pub fn main() {
 
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
     glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));

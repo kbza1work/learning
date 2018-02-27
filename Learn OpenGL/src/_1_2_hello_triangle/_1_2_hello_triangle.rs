@@ -41,7 +41,7 @@ const violetShaderSource: &str = r#"
 "#;
 
 #[allow(non_snake_case)]
-pub fn main_1_2() {
+pub fn main() {
     // glfw: initialize and configure
     // ------------------------------
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();

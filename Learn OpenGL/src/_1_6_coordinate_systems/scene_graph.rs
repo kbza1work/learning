@@ -3,7 +3,7 @@ use cgmath::prelude::*;
 
 extern crate gl;
 
-use scene_element::SceneElement;
+use super::scene_element::SceneElement;
 
 pub struct SceneGraph {
     view_matrix: Matrix4<f32>,
