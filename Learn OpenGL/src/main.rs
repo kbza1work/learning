@@ -13,6 +13,8 @@ mod _1_4_textures;
 mod _1_5_transformations;
 mod _1_6_coordinate_systems;
 
+mod _2_1_colors;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
@@ -28,6 +30,8 @@ fn main() {
         "1.4" => _1_4_textures::main(),
         "1.5" => _1_5_transformations::main(),
         "1.6" => _1_6_coordinate_systems::main(),
+
+        "2.1" => _2_1_colors::main(),
 
         _ => println!("Unknown tutorial ID"),
     }
