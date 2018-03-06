@@ -1,10 +1,15 @@
 use cgmath::{InnerSpace, Matrix4, Point3, Vector3, Zero};
 
-enum CameraMovement { Forward, Backward, Left, Right }
+pub enum CameraMovement { Forward, Backward, Left, Right }
 use self::CameraMovement::*;
 
 #[derive(Debug)]
 pub struct Pitch(f32);
+impl Pitch {
+    pub fn new(yaw: f32) -> Self {
+        Pitch { 0: yaw }
+    }
+}
 impl Default for Pitch {
     fn default() -> Self {
         Pitch(0.0)
@@ -13,6 +18,11 @@ impl Default for Pitch {
 
 #[derive(Debug)]
 pub struct Yaw(f32);
+impl Yaw {
+    pub fn new(yaw: f32) -> Self {
+        Yaw { 0: yaw }
+    }
+}
 impl Default for Yaw {
     fn default() -> Self {
         Yaw(-90.0)
@@ -21,6 +31,11 @@ impl Default for Yaw {
 
 #[derive(Debug)]
 pub struct Speed(f32);
+impl Speed {
+    pub fn new(yaw: f32) -> Self {
+        Speed { 0: yaw }
+    }
+}
 impl Default for Speed {
     fn default() -> Self {
         Speed(2.5)
@@ -43,7 +58,7 @@ impl Default for Zoom {
     }
 }
 
-struct Camera {
+pub struct Camera {
     position: Point3<f32>,
     front: Vector3<f32>,
     up: Vector3<f32>,
@@ -84,7 +99,7 @@ impl Camera {
         let distance_moved = self.movement_speed * delta_time;
         match direction {
             Forward => self.position += self.front * distance_moved,
-            Backward => self.position += (self.front * distance_moved),
+            Backward => self.position += -(self.front * distance_moved),
             Right => self.position += self.right * distance_moved,
             Left => self.position += -(self.right * distance_moved),
         }
@@ -110,7 +125,7 @@ impl Camera {
         self.update_camera_vectors();
     }
 
-    pub fn process_mouse_scroll(&mut self, y_offset: f32) {
+    pub fn process_scroll(&mut self, y_offset: f32) {
         if self.zoom >= 1.0 && self.zoom <= 45.0 {
             self.zoom -= y_offset;
         } else if self.zoom <= 1.0 {
@@ -125,8 +140,8 @@ impl Camera {
     fn update_camera_vectors(&mut self) {
         self.front = Vector3::new(
             self.yaw.to_radians().cos() * self.pitch.to_radians().cos(),
-            self.pitch.to_radians().cos(),
-            self.yaw.to_radians().cos() * self.pitch.to_radians().cos(),
+            self.pitch.to_radians().sin(),
+            self.yaw.to_radians().sin() * self.pitch.to_radians().cos(),
         ).normalize();
         self.right = self.front.cross(self.world_up).normalize();
         self.up = self.right.cross(self.front).normalize();
