@@ -14,6 +14,7 @@ mod _1_5_transformations;
 mod _1_6_coordinate_systems;
 
 mod _2_1_colors;
+mod _2_2_basic_lighting;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -32,6 +33,7 @@ fn main() {
         "1.6" => _1_6_coordinate_systems::main(),
 
         "2.1" => _2_1_colors::main(),
+        "2.2" => _2_2_basic_lighting::main(),
 
         _ => println!("Unknown tutorial ID"),
     }

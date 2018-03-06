@@ -8,7 +8,7 @@ use std::str;
 use gl;
 use gl::types::*;
 
-use cgmath::{Matrix, Matrix4, Vector3};
+use cgmath::{Matrix, Matrix3, Matrix4, Vector3};
 use cgmath::prelude::*;
 
 pub struct Shader {
@@ -90,6 +90,10 @@ impl Shader {
     /// ------------------------------------------------------------------------
     pub unsafe fn set_3f(&self, name: &CStr, x: f32, y: f32, z: f32) {
         gl::Uniform3f(gl::GetUniformLocation(self.ID, name.as_ptr()), x, y, z);
+    }
+    /// ------------------------------------------------------------------------
+    pub unsafe fn set_mat3fv(&self, name: &CStr, mat: &Matrix3<f32>) {
+        gl::UniformMatrix3fv(gl::GetUniformLocation(self.ID, name.as_ptr()), 1, gl::FALSE, mat.as_ptr());
     }
     /// ------------------------------------------------------------------------
     pub unsafe fn set_mat4fv(&self, name: &CStr, mat: &Matrix4<f32>) {
