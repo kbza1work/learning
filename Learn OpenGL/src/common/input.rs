@@ -55,10 +55,16 @@ pub fn process_input(window: &mut glfw::Window, delta_time: f32, camera: &mut Ca
         camera.process_keyboard(CameraMovement::Backward, delta_time);
     }
     if window.get_key(Key::A) == Action::Press {
-        camera.process_keyboard(CameraMovement::Left, delta_time);
+        camera.process_keyboard(CameraMovement::TurnLeft, delta_time);
     }
     if window.get_key(Key::D) == Action::Press {
-        camera.process_keyboard(CameraMovement::Right, delta_time);
+        camera.process_keyboard(CameraMovement::TurnRight, delta_time);
+    }
+    if window.get_key(Key::Q) == Action::Press {
+        camera.process_keyboard(CameraMovement::StrafeLeft, delta_time);
+    }
+    if window.get_key(Key::E) == Action::Press {
+        camera.process_keyboard(CameraMovement::StrafeRight, delta_time);
     }
 }
 

@@ -1,6 +1,8 @@
+use std::f32::consts::PI;
+
 use cgmath::{InnerSpace, Matrix4, Point3, Vector3, Zero};
 
-pub enum CameraMovement { Forward, Backward, Left, Right }
+pub enum CameraMovement { Forward, Backward, TurnLeft, TurnRight, StrafeLeft, StrafeRight }
 use self::CameraMovement::*;
 
 #[derive(Debug)]
@@ -100,8 +102,16 @@ impl Camera {
         match direction {
             Forward => self.position += self.front * distance_moved,
             Backward => self.position += -(self.front * distance_moved),
-            Right => self.position += self.right * distance_moved,
-            Left => self.position += -(self.right * distance_moved),
+            TurnRight => {
+                self.yaw += PI * self.movement_speed * distance_moved;
+                self.update_camera_vectors();
+            },
+            TurnLeft => {
+                self.yaw -= PI * self.movement_speed * distance_moved;
+                self.update_camera_vectors();
+            },
+            StrafeRight => self.position += self.right * distance_moved,
+            StrafeLeft => self.position += -(self.right * distance_moved),
         }
     }
 
