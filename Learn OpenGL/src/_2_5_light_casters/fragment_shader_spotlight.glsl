@@ -59,6 +59,8 @@ void main() {
 		emissionColor = vec3(texture(material.emissionColor, texCoords));
 	}
 
-	finalColor = ambientColor + diffuseColor + specularColor + emissionColor;
+	// DEBUG
+	finalColor = baseColor;
+	// finalColor = ambientColor + diffuseColor + specularColor + emissionColor;
 	fragColor = vec4(finalColor, 1.0);
 }
