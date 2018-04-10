@@ -40,7 +40,7 @@ impl Speed {
 }
 impl Default for Speed {
     fn default() -> Self {
-        Speed(2.5)
+        Speed(3.0)
     }
 }
 
