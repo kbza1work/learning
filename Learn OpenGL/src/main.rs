@@ -17,6 +17,7 @@ mod _2_1_colors;
 mod _2_2_basic_lighting;
 mod _2_3_materials;
 mod _2_4_lighting_maps;
+mod _2_5_light_casters;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -38,6 +39,7 @@ fn main() {
         "2.2" => _2_2_basic_lighting::main(),
         "2.3" => _2_3_materials::main(),
         "2.4" => _2_4_lighting_maps::main(),
+        "2.5" => _2_5_light_casters::main(),
 
         _ => println!("Unknown tutorial ID"),
     }

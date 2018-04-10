@@ -61,17 +61,17 @@ impl Default for Zoom {
 }
 
 pub struct Camera {
-    position: Point3<f32>,
-    front: Vector3<f32>,
-    up: Vector3<f32>,
-    right: Vector3<f32>,
-    world_up: Vector3<f32>,
-    yaw: f32,
-    pitch: f32,
+    pub position: Point3<f32>,
+    pub front: Vector3<f32>,
+    pub up: Vector3<f32>,
+    pub right: Vector3<f32>,
+    pub world_up: Vector3<f32>,
+    pub yaw: f32,
+    pub pitch: f32,
 
-    movement_speed: f32,
-    mouse_sensitivity: f32,
-    zoom: f32,
+    pub movement_speed: f32,
+    pub mouse_sensitivity: f32,
+    pub zoom: f32,
 }
 
 impl Camera {
