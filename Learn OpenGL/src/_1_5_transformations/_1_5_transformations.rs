@@ -18,7 +18,6 @@ use cgmath::{Matrix4, vec3,  Rad};
 use cgmath::prelude::*;
 
 use common::shader::Shader;
-use common::texture::load_texture;
 
 // settings
 const SCREEN_WIDTH: u32 = 1024;
