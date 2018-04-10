@@ -44,9 +44,9 @@ impl ContainerCube {
         let material = Material {
             ambient_color: Vector3::new(1.0, 0.5, 0.31),
             // DEBUG
-            diffuse_map_texture_id: load_texture(&format!("{}/texture_container.png", src_folder)),
-            specular_map_texture_id: load_texture(&format!("{}/texture_container_specular_map.png", src_folder)),
-            emission_map_texture_id: Some(load_texture(&format!("{}/texture_emission_map.jpg", src_folder))),
+            diffuse_map_texture_id: load_texture(&format!("{}/texture_container.png", src_folder), true),
+            specular_map_texture_id: load_texture(&format!("{}/texture_container_specular_map.png", src_folder), true),
+            emission_map_texture_id: Some(load_texture(&format!("{}/texture_emission_map.jpg", src_folder), false)),
             shininess: 32.0,
         };
 

@@ -7,12 +7,18 @@ use image;
 use image::GenericImage;
 use image::DynamicImage::*;
 
-pub fn load_texture(path: &str) -> u32 {
+pub fn load_texture(path: &str, flip_y: bool) -> u32 {
     let mut texture_id = 0;
 
     unsafe {
         gl::GenTextures(1, &mut texture_id);
-        let img = image::open(&Path::new(path)).expect(&format!("Texture {} failed to load", path));
+        let mut img = image::open(&Path::new(path)).expect(&format!("Texture {} failed to load", path));
+
+        if flip_y {
+            img = img.flipv(); // flip loaded texture on the y-axis.
+        }
+        let img = img;
+
         let format = match img {
             ImageLuma8(_) => gl::RED,
             ImageLumaA8(_) => gl::RG,
