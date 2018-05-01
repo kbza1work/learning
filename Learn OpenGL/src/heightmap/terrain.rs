@@ -59,12 +59,13 @@ impl Terrain {
         let fragment_shader_path = &format!("{}/fragment_shader.glsl", src_folder);
         let heightmap_path = &format!("{}/heightmap_1.png", src_folder);
 
-        let (mut vertices, indices) = heightmap::heightmap_data(heightmap_path, true);
+        let (mut vertices, indices, normals) = heightmap::heightmap_data(heightmap_path, true);
         let num_elements_to_draw = indices.len() as i32;
         let shader_program = Shader::new(vertex_shader_path, fragment_shader_path);
         let (mut vao, mut vbo, mut ebo) = (0, 0, 0);
 
-        // scale the terrain
+        // TODO: the heightmap module needs to do the terrain scaling so scaling changes the
+        // normals and the normals it calculates will be wrong
         let width = 100.0;
         for (index, mut coordinate) in vertices.iter_mut().enumerate() {
             match index % 3 {

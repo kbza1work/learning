@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn heightmap_for_square_peak() {
-    let (actual_vertices, actual_indices) =
+    let (actual_vertices, actual_indices, actual_normals) =
         heightmap_data("test/heightmap/test_heightmap.png", true);
 
     let expected_vertices: Vec<f32> = vec![
@@ -18,6 +18,20 @@ fn heightmap_for_square_peak() {
         0.0,  -32_513.0,  1.0,
         0.5,  -32_513.0,  1.0,
         1.0,  -32_513.0,  1.0,
+    ];
+    let expected_normals = vec![
+        // row 1
+        0.0,        1.0,  0.0,
+        0.0,   65_025.0, -4.0,
+        0.0,        1.0,  0.0,
+        // row 2
+        0.0,  -32_513.0, -4.0,
+        0.0,        1.0,  0.0,
+        0.0,  -32_513.0, -4.0,
+        // row 3
+        0.0,  -32_513.0, -4.0,
+        0.0,  -32_513.0, -4.0,
+        0.0,  -32_513.0, -4.0,
     ];
     let expected_indices: Vec<i32> = vec![
         // strip 1
@@ -41,7 +55,7 @@ fn heightmap_for_square_peak() {
 
 #[test]
 fn heightmap_for_rectangular_peak() {
-    let (actual_vertices, actual_indices) =
+    let (actual_vertices, actual_indices, actual_normals) =
         heightmap_data("test/heightmap/test_heightmap_2.png", true);
 
     let expected_vertices: Vec<f32> = vec![
