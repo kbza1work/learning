@@ -103,14 +103,12 @@ pub fn main() {
     ).expect("Failed to create GLFW window.");
 
     window.make_current();
-    // DEBUG -- make this a parameter of some kind
-    window.set_cursor_pos_polling(true);
+    // window.set_cursor_pos_polling(true);
     window.set_scroll_polling(true);
     window.set_framebuffer_size_polling(true);
 
     // tell GLFW to capture our mouse
-    // DEBUG -- make this a parameter of some kind
-    window.set_cursor_mode(glfw::CursorMode::Disabled);
+    // window.set_cursor_mode(glfw::CursorMode::Disabled);
 
     // initialize OpenGL function pointers
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
@@ -141,10 +139,10 @@ pub fn main() {
     ];
 
     let camera = Camera::new(
-        Point3::new(0.0, 20.0, 1.0),
+        Point3::new(00.0, 20.0, 0.0),
         Vector3::unit_y(),
-        Yaw::new(-90.0),
-        Pitch::new(-45.0),
+        Yaw::new(45.0),
+        Pitch::new(-10.0),
     );
     let mut scene_graph = SceneGraph::new(
         SCREEN_WIDTH, SCREEN_HEIGHT, SRC_FOLDER, camera, lights
