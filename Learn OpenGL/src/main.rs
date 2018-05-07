@@ -20,6 +20,8 @@ mod _2_4_lighting_maps;
 mod _2_5_light_casters;
 mod _2_6_multiple_lights;
 
+mod heightmap;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
@@ -42,6 +44,8 @@ fn main() {
         "2.4" => _2_4_lighting_maps::main(),
         "2.5" => _2_5_light_casters::main(),
         "2.6" => _2_6_multiple_lights::main(),
+
+        "heightmap" => heightmap::main(),
 
         _ => println!("Unknown tutorial ID"),
     }
