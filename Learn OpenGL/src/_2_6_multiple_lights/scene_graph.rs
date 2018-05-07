@@ -61,7 +61,7 @@ impl SceneGraph {
 
     /// update all flashlights to point forward from the camera
     fn update_flashlights(&mut self) {
-        let mut flashlights = self.lights.iter_mut().filter(|light| {
+        let flashlights = self.lights.iter_mut().filter(|light| {
             match light.light_type {
                 LightType::Spotlight { flashlight, ..} => flashlight,
                 _ => false,

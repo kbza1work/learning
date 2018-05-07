@@ -19,7 +19,7 @@ impl SceneGraph {
     pub fn new(
         screen_width: u32,
         screen_height: u32,
-        src_folder: &str,
+        _src_folder: &str,
         camera: Camera,
         lights: Vec<Light>,
     ) -> Self {

@@ -16,7 +16,7 @@ use common::texture::load_texture;
 use common::heightmap;
 
 use super::scene_element::SceneElement;
-use super::light::{Light, LightType};
+use super::light::Light;
 use super::material::Material;
 
 pub struct Terrain {
@@ -143,7 +143,7 @@ impl SceneElement for Terrain {
     fn render_frame(
         &self,
         _t: f32,
-        lights: &Vec<Light>,
+        _lights: &Vec<Light>,
         view_matrix: &Matrix4<f32>,
         projection_matrix: &Matrix4<f32>,
     ) {

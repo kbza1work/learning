@@ -11,7 +11,6 @@ use common::input::*;
 use super::coordinate_axes::CoordinateAxes;
 use super::scene_graph::SceneGraph;
 use super::cubes::Cubes;
-use super::lamps::Lamps;
 use super::light::{Light, LightType};
 
 const SRC_FOLDER: &'static str = "_2_6_multiple_lights";

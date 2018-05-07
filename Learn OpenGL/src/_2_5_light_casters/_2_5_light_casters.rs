@@ -11,7 +11,6 @@ use common::input::*;
 use super::coordinate_axes::CoordinateAxes;
 use super::scene_graph::SceneGraph;
 use super::container_cube::ContainerCube;
-use super::lamp_cube::LampCube;
 use super::light::{Light, LightType};
 
 const SRC_FOLDER: &'static str = "_2_5_light_casters";
@@ -91,8 +90,6 @@ pub fn main() {
     ));
 
     scene_graph.add_element(Box::new(ContainerCube::new(SRC_FOLDER)));
-
-    // scene_graph.add_element(Box::new(LampCube::new(SRC_FOLDER)));
 
     let mut scene_graph = scene_graph;
 
