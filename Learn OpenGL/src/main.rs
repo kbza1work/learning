@@ -20,6 +20,8 @@ mod _2_4_lighting_maps;
 mod _2_5_light_casters;
 mod _2_6_multiple_lights;
 
+mod _4_2_stencil_testing;
+
 mod heightmap;
 
 fn main() {
@@ -44,6 +46,8 @@ fn main() {
         "2.4" => _2_4_lighting_maps::main(),
         "2.5" => _2_5_light_casters::main(),
         "2.6" => _2_6_multiple_lights::main(),
+
+        "4.2" => _4_2_stencil_testing::main(),
 
         "heightmap" => heightmap::main(),
 
