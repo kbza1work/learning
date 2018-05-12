@@ -38,7 +38,7 @@ impl Ground {
             vao: vao,
             vbo: vbo,
             model_matrix: model_matrix,
-            texture_id: load_texture(&format!("{}/texture_marble.jpg", src_folder), true),
+            texture_id: load_texture(&format!("{}/texture_metal.png", src_folder), true),
         }
     }
 
