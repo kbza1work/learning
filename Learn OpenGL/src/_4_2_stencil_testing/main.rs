@@ -12,7 +12,6 @@ use super::coordinate_axes::CoordinateAxes;
 use super::scene_graph::SceneGraph;
 use super::cubes::Cubes;
 use super::ground::Ground;
-use super::lamps::Lamps;
 use super::light::{Light, LightType};
 
 const SRC_FOLDER: &'static str = "_4_2_stencil_testing";
